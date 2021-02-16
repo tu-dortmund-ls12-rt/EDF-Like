@@ -44,7 +44,8 @@ def pickColor(ischeme):
     elif ischeme.__contains__('PATH-PBminD') and ischeme.__contains__('D=D'):
         color = '#00FF00'
     else:
-        color = '#008080'
+        color = "#%06x" % random.randint(0, 0xFFFFFF)
+        # color = '#008080'
     return color
 
 def pickMarker(ischeme):
@@ -279,7 +280,7 @@ def effsstsPlotAll(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, u
     print(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep,numberoftasks)
     print('-------------------------------------------------------')
     for scheme in schemes:
-        effsstsPlot(prefix, False, scheme.split(), minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks)
+        effsstsPlot(prefix, False, [scheme], minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks)
     if (plotall):
         effsstsPlot(prefix, True, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks)
 

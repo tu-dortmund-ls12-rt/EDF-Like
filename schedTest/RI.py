@@ -1,11 +1,46 @@
 from math import ceil  # ceiling function
 
 
-def RI_fixed(tasks, lam=0.01, abort=3):
+def set_prio(tasks, prio_policy=0, lam=0):
+    # if prio_policy not in [1, 2, 3, 4]:
+    #     print("Priority policy is not implemented.")
+    #     return
+    if prio_policy == 2:  # DM
+        p = 0
+    for task in tasks:
+        if prio_policy == 1:  # FIFO:
+            task['prio_shift'] = 0
+        elif prio_policy == 2:  # DM:
+            p += task['deadline']
+            task['prio_shift'] = p
+        elif prio_policy == 3:  # EDF
+            task['prio_shift'] = task['deadline']
+        elif prio_policy == 4:
+            task['prio_shift'] = task['deadline']-0.5*task['sslength']
+        elif prio_policy == 5:
+            task['prio_shift'] = task['deadline']+0.5*task['sslength']
+        elif prio_policy == 6:
+            task['prio_shift'] = task['deadline']*task['execution']
+        elif prio_policy == 7:
+            task['prio_shift'] = task['deadline'] * (task['execution'] + 0.5 * task['sslength'])
+        elif prio_policy == 8:
+            task['prio_shift'] = task['deadline'] * (task['execution'] + 0.15 * task['sslength'])
+        elif prio_policy == 9:
+            task['prio_shift'] = (task['deadline']+0.5*task['sslength'])*task['execution']
+        elif prio_policy == 101:  # EDF eval
+            task['prio_shift'] = task['deadline']
+
+
+def RI_fixed(tasks, lam=0.01, abort=3, setprio=0):
     # priority shift is an additional parameter in task
+
+    # Set priorities
+    if setprio != 0:
+        set_prio(tasks, setprio)
 
     # # Order task set by Priority
     # ord_tasks = sorted(tasks, key=lambda item: -item['prio_shift'])
+    # Order task set inverse by deadline
     ord_tasks = tasks[::-1]
 
     # Initial response times.

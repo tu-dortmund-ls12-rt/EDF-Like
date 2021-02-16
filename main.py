@@ -1,5 +1,5 @@
 from __future__ import division
-from schedTest import tgPath, RI
+from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF
 from effsstsPlot import effsstsPlot
 
 import numpy as np
@@ -25,7 +25,9 @@ gMinsstype = 0.1  # minimal total self-suspension length
 
 gSSofftypes = 2  # number of self-suspension segments
 
-gSchemes = ['RI-fix']  # schedulability tests to be run
+# Schedulability tests to be run:
+# EDF Evaluation.
+gSchemes = ['RI Pi_i = D_i', 'Our EMSoft', 'Dong and Liu', 'Liu and Anderson', 'Susp as Comp']
 
 gPlotdata = True  # flag to plot data
 
@@ -51,29 +53,6 @@ for u in range(gUStart, gUEnd, gUStep):
     tasksets_difutil.append(tasksets)  # add
 
 # breakpoint()
-###
-# Add priority shifts
-###
-import math
-for tasksets in tasksets_difutil:
-    for taskset in tasksets:
-        # p = 0  # DM
-        for task in taskset:
-            # task['prio_shift'] = task['deadline']
-            # task['prio_shift'] = task['deadline']-0.5*task['sslength']
-            # task['prio_shift'] = task['deadline']+0.5*task['sslength']
-            # task['prio_shift'] = task['deadline']*task['execution']
-            # task['prio_shift'] = (task['deadline']+0.5*task['sslength'])*task['execution']
-            # task['prio_shift'] = task['deadline'] * (task['execution'] + 0.5 * task['sslength'])
-
-            # # DM:
-            # p += task['deadline']
-            # task['prio_shift'] = p
-
-            # FIFO:
-            task['prio_shift'] = 0
-
-
 
 ###
 # Schedulability tests
@@ -152,8 +131,55 @@ for ischeme in gSchemes:
                 if RSS.SC2EDF(tasks) is False:  # sorted tasks
                     numfail += 1
             # mguenzel
-            elif ischeme == 'RI-fix':  # RI scheduling
-                if RI.RI_fixed_better(tasks, abort=3) is False:
+            elif ischeme == 'RI-fix-1':  # RI scheduling
+                if RI.RI_fixed(tasks, abort=3, setprio=1) is False:
+                    numfail += 1
+            elif ischeme == 'RI-fix-2':  # RI scheduling
+                if RI.RI_fixed(tasks, abort=3, setprio=2) is False:
+                    numfail += 1
+            elif ischeme == 'RI-fix-3':  # RI scheduling
+                if RI.RI_fixed(tasks, abort=3, setprio=3) is False:
+                    numfail += 1
+            elif ischeme == 'RI-fix-4':  # RI scheduling
+                if RI.RI_fixed(tasks, abort=3, setprio=4) is False:
+                    numfail += 1
+            elif ischeme == 'RI-fix-5':  # RI scheduling
+                if RI.RI_fixed(tasks, abort=3, setprio=5) is False:
+                    numfail += 1
+            elif ischeme == 'RI-fix-6':  # RI scheduling
+                if RI.RI_fixed(tasks, abort=3, setprio=6) is False:
+                    numfail += 1
+            elif ischeme == 'RI-fix-7':  # RI scheduling
+                if RI.RI_fixed(tasks, abort=3, setprio=7) is False:
+                    numfail += 1
+            elif ischeme == 'RI-fix-8':  # RI scheduling
+                if RI.RI_fixed(tasks, abort=3, setprio=8) is False:
+                    numfail += 1
+            elif ischeme == 'RI-fix-9':  # RI scheduling
+                if RI.RI_fixed(tasks, abort=3, setprio=9) is False:
+                    numfail += 1
+            elif ischeme == 'RI-fix-any':  # RI scheduling
+                fail_flag = True
+                for ind in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+                    if RI.RI_fixed(tasks, abort=3, setprio=ind) is True:
+                        fail_flag = False
+                if fail_flag:
+                    numfail += 1
+            elif ischeme == 'RI Pi_i = D_i':  # RI scheduling
+                RI.set_prio(tasks, prio_policy=9)
+                if RI.RI_fixed(tasks, abort=3) is False:
+                    numfail += 1
+            elif ischeme == 'Our EMSoft':  # Our EMSoft
+                if RTEDF.RTEDF(tasks) is False:
+                    numfail += 1
+            elif ischeme == 'Dong and Liu':
+                if UDLEDF.UDLEDF(tasks) is False:
+                    numfail += 1
+            elif ischeme == 'Liu and Anderson':
+                if WLAEDF.WLAEDF(tasks) is False:
+                    numfail += 1
+            elif ischeme == 'Susp as Comp':
+                if SCEDF.SC_EDF(tasks) is False:
                     numfail += 1
             else:
                 assert ischeme, 'not vaild ischeme'
