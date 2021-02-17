@@ -5,7 +5,7 @@ def Workload_JitBlock(T, C, t, Q, y):
     # y is y_i and Q is calcualed beforehand
     return max(0,C*math.ceil((t+Q+(1-y)*(T-C))/T))
 
-def TDAjitblock(task,HPTasks): #original design in RTAS2018
+def TDAjitblock(task, HPTasks): #original design in RTAS2018
         vecY = [0 for j in range(len(HPTasks)+1)]
         C=task['execution']+task['sslength']
         R=C

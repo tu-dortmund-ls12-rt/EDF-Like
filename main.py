@@ -1,5 +1,5 @@
 from __future__ import division
-from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF
+from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF, Audsley, UniFramework
 from effsstsPlot import effsstsPlot
 
 import numpy as np
@@ -26,8 +26,10 @@ gMinsstype = 0.1  # minimal total self-suspension length
 gSSofftypes = 2  # number of self-suspension segments
 
 # Schedulability tests to be run:
-# EDF Evaluation.
-gSchemes = ['RI Pi_i = D_i', 'Our EMSoft', 'Dong and Liu', 'Liu and Anderson', 'Susp as Comp']
+# # EDF Evaluation.
+# gSchemes = ['RI Pi_i = D_i', 'Our EMSoft', 'Dong and Liu', 'Liu and Anderson', 'Susp as Comp']
+# DM Evaluation.
+gSchemes = ['RI Pi_i = Sum D_j', 'UniFramework']
 
 gPlotdata = True  # flag to plot data
 
@@ -166,7 +168,7 @@ for ischeme in gSchemes:
                 if fail_flag:
                     numfail += 1
             elif ischeme == 'RI Pi_i = D_i':  # RI scheduling
-                RI.set_prio(tasks, prio_policy=9)
+                RI.set_prio(tasks, prio_policy=101)
                 if RI.RI_fixed(tasks, abort=3) is False:
                     numfail += 1
             elif ischeme == 'Our EMSoft':  # Our EMSoft
@@ -180,6 +182,13 @@ for ischeme in gSchemes:
                     numfail += 1
             elif ischeme == 'Susp as Comp':
                 if SCEDF.SC_EDF(tasks) is False:
+                    numfail += 1
+            elif ischeme == 'RI Pi_i = Sum D_j':  # RI scheduling
+                RI.set_prio(tasks, prio_policy=2)
+                if RI.RI_fixed(tasks, abort=3) is False:
+                    numfail += 1
+            elif ischeme == 'UniFramework':
+                if UniFramework.UniFramework(tasks) is False:
                     numfail += 1
             else:
                 assert ischeme, 'not vaild ischeme'
