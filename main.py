@@ -20,7 +20,7 @@ gUStart = 0  # utilization start
 gUEnd = 100  # utilization end
 
 # share from period - wcet for self-suspension:
-gMaxsstype = 0.3  # maximal total self-suspension length
+gMaxsstype = 0.5  # maximal total self-suspension length
 gMinsstype = 0.1  # minimal total self-suspension length
 
 gSSofftypes = 2  # number of self-suspension segments
@@ -29,7 +29,7 @@ gSSofftypes = 2  # number of self-suspension segments
 # # EDF Evaluation.
 # gSchemes = ['RI Pi_i = D_i', 'Our EMSoft', 'Dong and Liu', 'Liu and Anderson', 'Susp as Comp']
 # DM Evaluation.
-gSchemes = ['RI Pi_i = Sum D_j', 'UniFramework', 'SuspObl']
+gSchemes = ['RI Pi_i = Sum D_j', 'UniFramework', 'SuspObl', 'SuspJit', 'SuspBlock']
 
 gPlotdata = True  # flag to plot data
 
@@ -191,6 +191,12 @@ for ischeme in gSchemes:
                 if UniFramework.UniFramework(tasks) is False:
                     numfail += 1
             elif ischeme == 'SuspObl':
+                if FP_Analyses.SuspObl(tasks) is False:
+                    numfail += 1
+            elif ischeme == 'SuspJit':
+                if FP_Analyses.SuspObl(tasks) is False:
+                    numfail += 1
+            elif ischeme == 'SuspBlock':
                 if FP_Analyses.SuspObl(tasks) is False:
                     numfail += 1
             else:
