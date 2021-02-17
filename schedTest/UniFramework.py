@@ -29,7 +29,7 @@ def compute_WCRT_bound(task, HPTasks, vec_x):
     # Compute Q.
     Q = []
     Qvar = 0.0
-    for idx in range(len(HPTasks)-1, 0-1, -1):
+    for idx in range(len(HPTasks)-1, 0-1, -1):  # from right to left
         Qvar += HPTasks[idx]['sslength']*vec_x[idx]
         Q.insert(0, Qvar)
     # for itask, ix in zip(HPTasks, vec_x):
@@ -104,9 +104,9 @@ def UniFramework(tasks):
 
         wcrt = min(wcrt_lin, wcrt2, wcrt3)
 
-        if wcrt > task['deadline']:  # deadline miss
+        if wcrt > tasks[idx]['deadline']:  # deadline miss
             return False
         else:
-            task['wcrt_uniframework'] = wcrt  # set wcrt
+            tasks[idx]['wcrt_uniframework'] = wcrt  # set wcrt
             continue
     return True
