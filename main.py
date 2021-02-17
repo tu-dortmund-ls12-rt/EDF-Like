@@ -21,7 +21,7 @@ gUEnd = 100  # utilization end
 
 # share from period - wcet for self-suspension:
 gMaxsstype = 0.5  # maximal total self-suspension length
-gMinsstype = 0.1  # minimal total self-suspension length
+gMinsstype = 0.0  # minimal total self-suspension length
 
 gSSofftypes = 2  # number of self-suspension segments
 
@@ -194,10 +194,10 @@ for ischeme in gSchemes:
                 if FP_Analyses.SuspObl(tasks) is False:
                     numfail += 1
             elif ischeme == 'SuspJit':
-                if FP_Analyses.SuspObl(tasks) is False:
+                if FP_Analyses.SuspJit(tasks) is False:
                     numfail += 1
             elif ischeme == 'SuspBlock':
-                if FP_Analyses.SuspObl(tasks) is False:
+                if FP_Analyses.SuspBlock(tasks) is False:
                     numfail += 1
             else:
                 assert ischeme, 'not vaild ischeme'

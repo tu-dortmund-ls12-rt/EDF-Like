@@ -87,7 +87,10 @@ def pickMarker(ischeme):
     elif ischeme.__contains__('PATH-PBminD') and ischeme.__contains__('D=D'):
         marker = 'v'
     else:
-        marker = '<'
+        randommarker = ['o', 'v', '^', '<', '>', '1', '2', '3', '4', '8', 's',
+                        'p', 'P', '*', '+', 'x', 'X', 'D', 'd']
+        # marker = '<'
+        marker = random.choice(randommarker)
     return marker
 
 def pickName(ischeme):
