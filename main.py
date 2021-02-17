@@ -1,5 +1,5 @@
 from __future__ import division
-from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF, Audsley, UniFramework
+from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF, Audsley, UniFramework, FP_Analyses
 from effsstsPlot import effsstsPlot
 
 import numpy as np
@@ -29,7 +29,7 @@ gSSofftypes = 2  # number of self-suspension segments
 # # EDF Evaluation.
 # gSchemes = ['RI Pi_i = D_i', 'Our EMSoft', 'Dong and Liu', 'Liu and Anderson', 'Susp as Comp']
 # DM Evaluation.
-gSchemes = ['RI Pi_i = Sum D_j', 'UniFramework']
+gSchemes = ['RI Pi_i = Sum D_j', 'UniFramework', 'SuspObl']
 
 gPlotdata = True  # flag to plot data
 
@@ -189,6 +189,9 @@ for ischeme in gSchemes:
                     numfail += 1
             elif ischeme == 'UniFramework':
                 if UniFramework.UniFramework(tasks) is False:
+                    numfail += 1
+            elif ischeme == 'SuspObl':
+                if FP_Analyses.SuspObl(tasks) is False:
                     numfail += 1
             else:
                 assert ischeme, 'not vaild ischeme'

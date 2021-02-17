@@ -26,7 +26,7 @@ def SuspObl_WCRT(task, HPTasks):
         wcrt = task['execution'] + task['sslength']
         for itask in HPTasks:
             wcrt += math.ceil(t/itask['period'])*(
-                itask['execution']+itask['suspension'])
+                itask['execution']+itask['sslength'])
         if (wcrt > task['deadline']  # deadline miss
                 or wcrt <= t):  # Eq 1 holds
             break
