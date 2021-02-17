@@ -29,7 +29,45 @@ def set_prio(tasks, prio_policy=0, lam=0):
             task['prio_shift'] = (task['deadline']+0.5*task['sslength'])*task['execution']
         elif prio_policy == 101:  # EDF eval
             task['prio_shift'] = task['deadline']
-
+        # EQEDF Eval
+        elif prio_policy == 201:
+            task['prio_shift'] = task['deadline'] + (-1)*task['execution']
+        elif prio_policy == 202:
+            task['prio_shift'] = task['deadline'] + (0)*task['execution']
+        elif prio_policy == 203:
+            task['prio_shift'] = task['deadline'] + (1)*task['execution']
+        elif prio_policy == 204:
+            task['prio_shift'] = task['deadline'] + (10)*task['execution']
+        elif prio_policy == 205:
+            task['prio_shift'] = task['deadline'] + (100)*task['execution']
+        elif prio_policy == 206:
+            task['prio_shift'] = task['deadline'] + (1000)*task['execution']
+        # EQEDF Eval
+        elif prio_policy == 301:
+            task['prio_shift'] = task['deadline'] + (-1)*task['sslength']
+        elif prio_policy == 302:
+            task['prio_shift'] = task['deadline'] + (0)*task['sslength']
+        elif prio_policy == 303:
+            task['prio_shift'] = task['deadline'] + (1)*task['sslength']
+        elif prio_policy == 304:
+            task['prio_shift'] = task['deadline'] + (10)*task['sslength']
+        elif prio_policy == 305:
+            task['prio_shift'] = task['deadline'] + (100)*task['sslength']
+        elif prio_policy == 306:
+            task['prio_shift'] = task['deadline'] + (1000)*task['sslength']
+        # Other Eval
+        elif prio_policy == 401:
+            task['prio_shift'] = 0
+        elif prio_policy == 402:
+            task['prio_shift'] = task['execution']
+        elif prio_policy == 403:
+            task['prio_shift'] = task['sslength']
+        elif prio_policy == 404:
+            task['prio_shift'] = task['deadline'] * task['execution']
+        elif prio_policy == 405:
+            task['prio_shift'] = task['deadline'] * task['sslength']
+        elif prio_policy == 406:
+            task['prio_shift'] = task['execution'] * task['sslength']
 
 def RI_fixed(tasks, lam=0.01, abort=3, setprio=0):
     # priority shift is an additional parameter in task
