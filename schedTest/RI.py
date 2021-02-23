@@ -29,7 +29,7 @@ def set_prio(tasks, prio_policy=0, lam=0):
             task['prio_shift'] = (task['deadline']+0.5*task['sslength'])*task['execution']
         elif prio_policy == 101:  # EDF eval
             task['prio_shift'] = task['deadline']
-        # EQEDF Eval
+        # EQDF Eval
         elif prio_policy == 201:
             task['prio_shift'] = task['deadline'] + (-1)*task['execution']
         elif prio_policy == 202:
@@ -42,7 +42,7 @@ def set_prio(tasks, prio_policy=0, lam=0):
             task['prio_shift'] = task['deadline'] + (100)*task['execution']
         elif prio_policy == 206:
             task['prio_shift'] = task['deadline'] + (1000)*task['execution']
-        # EQEDF Eval
+        # EQDF Eval
         elif prio_policy == 301:
             task['prio_shift'] = task['deadline'] + (-1)*task['sslength']
         elif prio_policy == 302:
@@ -69,17 +69,22 @@ def set_prio(tasks, prio_policy=0, lam=0):
         elif prio_policy == 406:
             task['prio_shift'] = task['execution'] * task['sslength']
 
-def RI_fixed(tasks, lam=0.01, abort=3, setprio=0):
-    # priority shift is an additional parameter in task
+
+def RI_fixed(tasks, eta=0.01, depth=3, setprio=0):
+    """Main function to run the schedulability test with fixed analysis window.
+    - tasks = the task set under analysis
+        - priority shift is an additional parameter in task
+    - eta = determine the step size for the search algorithm
+    - depth = number of improving runs in the search algorithm
+    - setprio = set the priorities (if != 0) using the function set_prio
+    """
 
     # Set priorities
     if setprio != 0:
         set_prio(tasks, setprio)
 
-    # # Order task set by Priority
-    # ord_tasks = sorted(tasks, key=lambda item: -item['prio_shift'])
-    # Order task set inverse by deadline
-    ord_tasks = tasks[::-1]
+    # Order task set by deadline from big to small
+    ord_tasks = sorted(tasks, key=lambda item: -item['deadline'])
 
     # Initial response times.
     resp = []
@@ -89,7 +94,7 @@ def RI_fixed(tasks, lam=0.01, abort=3, setprio=0):
     solved = False
     indrun = 0
 
-    while indrun < abort and not solved:
+    while indrun < depth and not solved:
         indrun += 1
         solved = True  # changed to false, if the iteration fails
 
@@ -106,15 +111,16 @@ def RI_fixed(tasks, lam=0.01, abort=3, setprio=0):
             cand = []
             idx = 0  # running index
             valb = 0  # value of b
-            step = lam * ord_tasks[indk]['deadline']
+            step = eta * ord_tasks[indk]['deadline']
             if step <= 0:  # check if step is big enough
                 print('step is too small')
                 return False
             while valb < ord_tasks[indk]['deadline']:
+                # Compute one candidate.
                 val = 0
                 val += ceil(
-                    (ord_tasks[indk]['deadline'] - valb)/ord_tasks[indk]['period']
-                    ) * (ord_tasks[indk]['execution']+ord_tasks[indk]['sslength'])
+                    (ord_tasks[indk]['deadline']-valb)/ord_tasks[indk]['period']
+                    )*(ord_tasks[indk]['execution']+ord_tasks[indk]['sslength'])
                 for indi in range(len(ord_tasks)):
                     if indi == indk:  # only consider i != k
                         continue
@@ -123,8 +129,10 @@ def RI_fixed(tasks, lam=0.01, abort=3, setprio=0):
                             ), 0) * ord_tasks[indi]['execution']
                 val += valb
 
-                cand.append(val)  # add canidate to list
+                # Add candidate to list.
+                cand.append(val)
 
+                # Prepare next iteration.
                 idx += 1
                 valb = idx * step
 

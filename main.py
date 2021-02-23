@@ -26,16 +26,18 @@ gMinsstype = 0.0  # minimal total self-suspension length
 gSSofftypes = 2  # number of self-suspension segments
 
 # Schedulability tests to be run:
-# EDF Evaluation.
-gSchemes = ['RI EDF', 'Our EMSoft', 'Dong and Liu', 'Liu and Anderson', 'Susp as Comp']
+# # EDF Evaluation.
+# gSchemes = ['RI EDF', 'Our EMSoft', 'Dong and Liu', 'Liu and Anderson', 'Susp as Comp']
 # # DM Evaluation.
 # gSchemes = ['RI DM', 'UniFramework', 'SuspObl', 'SuspJit', 'SuspBlock']
-# # RI EQEDF
-# gSchemes = ['RI EQEDF lam=-1', 'RI EQEDF lam=0', 'RI EQEDF lam=1', 'RI EQEDF lam=10', 'RI EQEDF lam=100', 'RI EQEDF lam=1000']
+# # RI EQDF
+# gSchemes = ['RI EQDF lam=-1', 'RI EQDF lam=0', 'RI EQDF lam=1', 'RI EQDF lam=10', 'RI EQDF lam=100', 'RI EQDF lam=1000']
 # # RI SAEDF
 # gSchemes = ['RI SAEDF lam=-1', 'RI SAEDF lam=0', 'RI SAEDF lam=1', 'RI SAEDF lam=10', 'RI SAEDF lam=100', 'RI SAEDF lam=1000']
 # # Other
 # gSchemes = ['RI FIFO', 'RI Pi=C', 'RI Pi=S', 'RI Pi=D*C', 'RI Pi=D*S', 'RI Pi=C*S']
+# RI fix any
+gSchemes = ['RI-fix-any']
 
 gPlotdata = True  # flag to plot data
 
@@ -205,28 +207,28 @@ for ischeme in gSchemes:
             elif ischeme == 'SuspBlock':
                 if FP_Analyses.SuspBlock(tasks) is False:
                     numfail += 1
-            # RI EQEDF
-            elif ischeme == 'RI EQEDF lam=-1':
+            # RI EQDF
+            elif ischeme == 'RI EQDF lam=-1':
                 RI.set_prio(tasks, prio_policy=201)
                 if RI.RI_fixed(tasks, abort=3) is False:
                     numfail += 1
-            elif ischeme == 'RI EQEDF lam=0':
+            elif ischeme == 'RI EQDF lam=0':
                 RI.set_prio(tasks, prio_policy=202)
                 if RI.RI_fixed(tasks, abort=3) is False:
                     numfail += 1
-            elif ischeme == 'RI EQEDF lam=1':
+            elif ischeme == 'RI EQDF lam=1':
                 RI.set_prio(tasks, prio_policy=203)
                 if RI.RI_fixed(tasks, abort=3) is False:
                     numfail += 1
-            elif ischeme == 'RI EQEDF lam=10':
+            elif ischeme == 'RI EQDF lam=10':
                 RI.set_prio(tasks, prio_policy=204)
                 if RI.RI_fixed(tasks, abort=3) is False:
                     numfail += 1
-            elif ischeme == 'RI EQEDF lam=100':
+            elif ischeme == 'RI EQDF lam=100':
                 RI.set_prio(tasks, prio_policy=205)
                 if RI.RI_fixed(tasks, abort=3) is False:
                     numfail += 1
-            elif ischeme == 'RI EQEDF lam=1000':
+            elif ischeme == 'RI EQDF lam=1000':
                 RI.set_prio(tasks, prio_policy=206)
                 if RI.RI_fixed(tasks, abort=3) is False:
                     numfail += 1
@@ -279,6 +281,19 @@ for ischeme in gSchemes:
             elif ischeme == 'RI Pi=C*S':
                 RI.set_prio(tasks, prio_policy=406)
                 if RI.RI_fixed(tasks, abort=3) is False:
+                    numfail += 1
+            elif ischeme == 'RI-fix-any':  # RI scheduling
+                fail_flag = True
+                for ind in [101,  # RI EDF
+                            2,  # RI DM
+                            201, 202, 203, 204, 205, 206,  # RI EQEDF
+                            301, 302, 303, 304, 305, 306,  # RI SAEDF
+                            401, 402, 403, 404, 405, 406]:  # RI Other
+                    RI.set_prio(tasks, prio_policy=ind)
+                    if RI.RI_fixed(tasks, abort=3) is True:
+                        fail_flag = False
+                        break
+                if fail_flag:
                     numfail += 1
             else:
                 assert ischeme, 'not vaild ischeme'
