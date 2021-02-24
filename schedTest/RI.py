@@ -86,7 +86,7 @@ def RI_fixed(tasks, eta=0.01, depth=3, setprio=0):
     # Order task set by deadline from big to small
     ord_tasks = sorted(tasks, key=lambda item: -item['deadline'])
 
-    # Initial response times.
+    # Initial response time bounds.
     resp = []
     for task in ord_tasks:
         resp.append(task['deadline'])
@@ -94,9 +94,11 @@ def RI_fixed(tasks, eta=0.01, depth=3, setprio=0):
     solved = False
     indrun = 0
 
+    # Iterate over number of improving runs, until depth is reached or the test
+    # returns True.
     while indrun < depth and not solved:
         indrun += 1
-        solved = True  # changed to false, if the iteration fails
+        solved = True  # will be changed to false, if the iteration fails
 
         # Iterate over task indices.
         for indk in range(len(ord_tasks)):
@@ -111,7 +113,7 @@ def RI_fixed(tasks, eta=0.01, depth=3, setprio=0):
             cand = []
             idx = 0  # running index
             valb = 0  # value of b
-            step = eta * ord_tasks[indk]['deadline']
+            step = eta * ord_tasks[indk]['deadline']  # step size
             if step <= 0:  # check if step is big enough
                 print('step is too small')
                 return False
@@ -144,4 +146,93 @@ def RI_fixed(tasks, eta=0.01, depth=3, setprio=0):
                 solved = False
                 resp[indk] = ord_tasks[indk]['deadline']
 
+    return solved
+
+
+def RI_var(tasks, eta=0.01, max_a=1, depth=3, setprio=0):
+    """Main function to run the schedulability test with variable analysis
+    window.
+    - tasks = the task set under analysis
+        - priority shift is an additional parameter in task
+    - eta = determine the step size for the search algorithm
+    - max_a = maximum length of analysis window
+    - depth = number of improving runs in the search algorithm
+    - setprio = set the priorities (if != 0) using the function set_prio
+    """
+
+    # Set priorities
+    if setprio != 0:
+        set_prio(tasks, setprio)
+
+    # Order task set by deadline from big to small.
+    ord_tasks = sorted(tasks, key=lambda item: -item['deadline'])
+
+    # Initial response time bounds.
+    resp = []
+    for task in ord_tasks:
+        resp.append(task['deadline'])
+
+    solved = False
+    indrun = 0
+
+    # Iterate over number of improving runs, until depth is reached or the test
+    # returns True.
+    while indrun < depth and not solved:
+        indrun += 1
+        solved = True  # will be changed to false, if the iteration fails
+
+        # Iterate over task indices.
+        for indk in range(len(ord_tasks)):
+            # Compute G.
+            G = []
+            for indi in range(len(ord_tasks)):
+                G.append(min(
+                    ord_tasks[indk]['period'] - ord_tasks[indi]['execution'],
+                    ord_tasks[indk]['prio_shift'] - ord_tasks[indi]['prio_shift']))
+
+            # Iterate over analysis window length.
+            resp_a = []  # response times for different a
+            for inda in range(max_a + 1):
+
+                # Compute candidates.
+                cand = []
+                idx = 0  # running index
+                valb = 0  # value of b
+                step = eta * ord_tasks[indk]['deadline']  # step size
+                if step <= 0:  # check if step is big enough
+                    print('step is too small')
+                    return False
+                while valb < inda*ord_tasks[indk]['period'] + ord_tasks[indk]['deadline']:
+                    # Compute one candidate.
+                    val = 0
+                    val += min([inda+1, ceil(
+                        (ord_tasks[indk]['deadline']-valb + inda * ord_tasks[indk]['period'])/ord_tasks[indk]['period']
+                        )])*(ord_tasks[indk]['execution']+ord_tasks[indk]['sslength'])
+                    for indi in range(len(ord_tasks)):
+                        if indi == indk:  # only consider i != k
+                            continue
+                        val += max(ceil(
+                                (G[indi] + resp[indi] - valb + inda*ord_tasks[indk]['period'])/ord_tasks[indi]['period']
+                                ), 0) * ord_tasks[indi]['execution']
+                    val += valb - inda * ord_tasks[indk]['period']
+
+                    # Add candidate to list.
+                    cand.append(val)
+
+                    # Prepare next iteration.
+                    idx += 1
+                    valb = idx * step
+
+                # Compare candidates.
+                resp_cand = min(cand)  # candidate for a certain a
+                resp_a.append(resp_cand)  # all candidates for different a
+
+                # Check schedulability condition.
+                if resp_cand <= ord_tasks[indk]['period']:
+                    resp[indk] = min(resp_a)
+                    break
+                if resp_cand > ord_tasks[indk]['deadline'] or inda == max_a:
+                    solved = False
+                    resp[indk] = ord_tasks[indk]['deadline']
+                    break
     return solved
