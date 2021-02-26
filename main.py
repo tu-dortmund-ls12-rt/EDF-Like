@@ -13,7 +13,7 @@ import random
 # global preferences
 ###
 
-gTotBucket = 1  # total number of task sets per utilization
+gTotBucket = 100  # total number of task sets per utilization
 gTasksinBkt = 10  # tasks per set
 
 gUStep = 5  # utilization step
@@ -127,6 +127,16 @@ for u in range(gUStart, gUEnd, gUStep):
 # Schedulability tests
 ###
 
+# # --- bug testing
+# for tasksets in tasksets_difutil:
+#     for tasks in tasksets:
+#         RI.set_prio(tasks, prio_policy=2)
+#         if RI.RI_fixed(tasks, depth=RI_depth) != RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a):
+#             breakpoint()
+#     print('done')
+# quit()
+# # ---
+
 # Iterate though schedulability tests
 for ischeme in gSchemes:
     x = np.arange(gUStart, gUEnd+1, gUStep)
@@ -173,7 +183,7 @@ for ischeme in gSchemes:
                     numfail += 1
             # --- 2 EDF Evaluation. ---
             elif ischeme == 'RI EDF':  # RI scheduling
-                RI.set_prio(tasks, prio_policy=101)
+                RI.set_prio(tasks, prio_policy=3)
                 if RI.RI_fixed(tasks, depth=RI_depth) is False:
                     numfail += 1
             elif ischeme == 'Our EMSoft':  # Our EMSoft
