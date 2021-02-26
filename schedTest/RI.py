@@ -8,66 +8,35 @@ def set_prio(tasks, prio_policy=0, lam=0):
     if prio_policy == 2:  # DM
         p = 0
     for task in tasks:
+        # Popular.
         if prio_policy == 1:  # FIFO:
             task['prio_shift'] = 0
-        elif prio_policy == 2:  # DM:
+        elif prio_policy == 2:  # DM: (for 1 DM Evaluation and 5 Arb deadline DM Evaluation)
             p += task['deadline']
             task['prio_shift'] = p
-        elif prio_policy == 3:  # EDF
+        elif prio_policy == 3:  # EDF (for 2 EDF Evaluation and 6 Arb deadline EDF Evaluation.)
             task['prio_shift'] = task['deadline']
-        elif prio_policy == 4:
-            task['prio_shift'] = task['deadline']-0.5*task['sslength']
-        elif prio_policy == 5:
-            task['prio_shift'] = task['deadline']+0.5*task['sslength']
-        elif prio_policy == 6:
-            task['prio_shift'] = task['deadline']*task['execution']
-        elif prio_policy == 7:
-            task['prio_shift'] = task['deadline'] * (task['execution'] + 0.5 * task['sslength'])
-        elif prio_policy == 8:
-            task['prio_shift'] = task['deadline'] * (task['execution'] + 0.15 * task['sslength'])
-        elif prio_policy == 9:
-            task['prio_shift'] = (task['deadline']+0.5*task['sslength'])*task['execution']
-        elif prio_policy == 101:  # EDF eval
-            task['prio_shift'] = task['deadline']
-        # EQDF Eval
-        elif prio_policy == 201:
-            task['prio_shift'] = task['deadline'] + (-1)*task['execution']
-        elif prio_policy == 202:
-            task['prio_shift'] = task['deadline'] + (0)*task['execution']
-        elif prio_policy == 203:
-            task['prio_shift'] = task['deadline'] + (1)*task['execution']
-        elif prio_policy == 204:
-            task['prio_shift'] = task['deadline'] + (10)*task['execution']
-        elif prio_policy == 205:
-            task['prio_shift'] = task['deadline'] + (100)*task['execution']
-        elif prio_policy == 206:
-            task['prio_shift'] = task['deadline'] + (1000)*task['execution']
-        # EQDF Eval
-        elif prio_policy == 301:
-            task['prio_shift'] = task['deadline'] + (-1)*task['sslength']
-        elif prio_policy == 302:
-            task['prio_shift'] = task['deadline'] + (0)*task['sslength']
-        elif prio_policy == 303:
-            task['prio_shift'] = task['deadline'] + (1)*task['sslength']
-        elif prio_policy == 304:
-            task['prio_shift'] = task['deadline'] + (10)*task['sslength']
-        elif prio_policy == 305:
-            task['prio_shift'] = task['deadline'] + (100)*task['sslength']
-        elif prio_policy == 306:
-            task['prio_shift'] = task['deadline'] + (1000)*task['sslength']
-        # Other Eval
-        elif prio_policy == 401:
-            task['prio_shift'] = 0
-        elif prio_policy == 402:
+        # Try-out other priority shifts.
+        elif prio_policy == 11:
             task['prio_shift'] = task['execution']
-        elif prio_policy == 403:
+        elif prio_policy == 12:
             task['prio_shift'] = task['sslength']
-        elif prio_policy == 404:
-            task['prio_shift'] = task['deadline'] * task['execution']
-        elif prio_policy == 405:
+        elif prio_policy == 13:
+            task['prio_shift'] = task['deadline']*task['execution']
+        elif prio_policy == 14:
             task['prio_shift'] = task['deadline'] * task['sslength']
-        elif prio_policy == 406:
+        elif prio_policy == 15:
             task['prio_shift'] = task['execution'] * task['sslength']
+        elif prio_policy == 16:
+            task['prio_shift'] = task['deadline'] * (task['execution'] + 0.15 * task['sslength'])
+        elif prio_policy == 17:
+            task['prio_shift'] = (task['deadline']+0.5*task['sslength'])*task['execution']
+        # 3 EQDF Evaluation.
+        elif prio_policy == 101:
+            task['prio_shift'] = task['deadline'] + lam*task['execution']
+        # 4 SAEDF Evaluation.
+        elif prio_policy == 201:
+            task['prio_shift'] = task['deadline'] + lam*task['sslength']
 
 
 def RI_fixed(tasks, eta=0.01, depth=3, setprio=0):
