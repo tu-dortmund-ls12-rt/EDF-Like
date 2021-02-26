@@ -5,8 +5,6 @@ from effsstsPlot import effsstsPlot
 import numpy as np
 import os
 
-import random
-
 
 ###
 # global preferences
@@ -39,8 +37,11 @@ gSSofftypes = 2  # number of self-suspension segments
 # # RI fix any
 # gSchemes = ['RI-fix-any']
 
-# RI arb deadline DM
-gSchemes = ['RI-var DM D1.0', 'RI-var DM D1.1', 'RI-var DM D1.2', 'RI-var DM D1.5']
+# # RI arb deadline DM
+# gSchemes = ['RI-var DM D1.0', 'RI-var DM D1.1', 'RI-var DM D1.2', 'RI-var DM D1.5']
+
+# RI arb deadline EDF
+gSchemes = ['RI-var EDF D1.0', 'RI-var EDF D1.1', 'RI-var EDF D1.2', 'RI-var EDF D1.5']
 
 gPlotdata = True  # flag to plot data
 
@@ -332,6 +333,43 @@ for ischeme in gSchemes:
                     itask['deadline'] = 1.5 * itask['period']
                 # Set priorities.
                 RI.set_prio(tasks, prio_policy=2)
+                # Sched test.
+                if RI.RI_var(tasks, depth=3, max_a=5) is False:
+                    numfail += 1
+            # RI-var DM
+            elif ischeme == 'RI-var EDF D1.0':
+                # Set Deadlines.
+                for itask in tasks:
+                    itask['deadline'] = 1.0 * itask['period']
+                # Set priorities.
+                RI.set_prio(tasks, prio_policy=3)
+                # Sched test.
+                if RI.RI_var(tasks, depth=3, max_a=5) is False:
+                    numfail += 1
+            elif ischeme == 'RI-var EDF D1.1':
+                # Set Deadlines.
+                for itask in tasks:
+                    itask['deadline'] = 1.1 * itask['period']
+                # Set priorities.
+                RI.set_prio(tasks, prio_policy=3)
+                # Sched test.
+                if RI.RI_var(tasks, depth=3, max_a=5) is False:
+                    numfail += 1
+            elif ischeme == 'RI-var EDF D1.2':
+                # Set Deadlines.
+                for itask in tasks:
+                    itask['deadline'] = 1.2 * itask['period']
+                # Set priorities.
+                RI.set_prio(tasks, prio_policy=3)
+                # Sched test.
+                if RI.RI_var(tasks, depth=3, max_a=5) is False:
+                    numfail += 1
+            elif ischeme == 'RI-var EDF D1.5':
+                # Set Deadlines.
+                for itask in tasks:
+                    itask['deadline'] = 1.5 * itask['period']
+                # Set priorities.
+                RI.set_prio(tasks, prio_policy=3)
                 # Sched test.
                 if RI.RI_var(tasks, depth=3, max_a=5) is False:
                     numfail += 1

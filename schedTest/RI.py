@@ -205,9 +205,9 @@ def RI_var(tasks, eta=0.01, max_a=1, depth=3, setprio=0):
                 while valb < inda*ord_tasks[indk]['period'] + ord_tasks[indk]['deadline']:
                     # Compute one candidate.
                     val = 0
-                    val += min([inda+1, ceil(
+                    val += min(inda+1, ceil(
                         (ord_tasks[indk]['deadline']-valb + inda * ord_tasks[indk]['period'])/ord_tasks[indk]['period']
-                        )])*(ord_tasks[indk]['execution']+ord_tasks[indk]['sslength'])
+                        ))*(ord_tasks[indk]['execution']+ord_tasks[indk]['sslength'])
                     for indi in range(len(ord_tasks)):
                         if indi == indk:  # only consider i != k
                             continue
@@ -227,9 +227,14 @@ def RI_var(tasks, eta=0.01, max_a=1, depth=3, setprio=0):
                 resp_cand = min(cand)  # candidate for a certain a
                 resp_a.append(resp_cand)  # all candidates for different a
 
+                # Check for bug.
+                if resp_cand < 0:
+                    print('resp_cand', resp_cand)
+                    breakpoint()
+
                 # Check schedulability condition.
                 if resp_cand <= ord_tasks[indk]['period']:
-                    resp[indk] = min(resp_a)
+                    resp[indk] = min(resp_a)  # WCRT upper bound
                     break
                 if resp_cand > ord_tasks[indk]['deadline'] or inda == max_a:
                     solved = False
