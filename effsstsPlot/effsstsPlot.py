@@ -107,7 +107,7 @@ def pickName(ischeme):
         name = ischeme
     return name
 
-def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks):
+def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks,Ncol=3):
     """
     prints all plots
     """
@@ -160,12 +160,12 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
             ax.legend(bbox_to_anchor=(0.5, 1.11),
                         loc=10,
                         markerscale=1.5,
-                        ncol=3,
+                        ncol=Ncol,
                         borderaxespad=0.,
                         prop={'size': 10})
 
     ax.set_title('No. of tasks: '+str(numberoftasks)+', Self-suspension length: ' +
-                    str(minsstype)+"-"+str(maxsstype)+', No. of segments: '+str(ssofftypes), size=10, y=0.99)
+                    str(minsstype)+"-"+str(maxsstype), size=10, y=0.99)
     ax.grid()
     i += 1
     #fig.savefig(prefix+"/"+isstype+"/"+issofftypes +
@@ -278,14 +278,14 @@ def effsstsPlotmulti(prefix, plotall, id_par, par_values, schemes, minsstype, ma
         print('[DONE]', '/' + prefix + '/' + schemes[0] + '[' +  str(ssofftypes) + '][' + str(minsstype)+"-"+str(maxsstype) + '][' + str(numberoftasks) + '].pdf')
 
 
-def effsstsPlotAll(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks):
+def effsstsPlotAll(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=3):
     print('-------------------------------------------------------')
     print(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep,numberoftasks)
     print('-------------------------------------------------------')
     for scheme in schemes:
-        effsstsPlot(prefix, False, [scheme], minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks)
+        effsstsPlot(prefix, False, [scheme], minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=Ncol)
     if (plotall):
-        effsstsPlot(prefix, True, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks)
+        effsstsPlot(prefix, True, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=Ncol)
 
 def effsstsPlotAllmulti(prefix, plotall, id_par, par_values, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks):
     print('-------------------------------------------------------')

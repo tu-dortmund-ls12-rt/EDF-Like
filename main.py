@@ -12,16 +12,20 @@ import random
 # global preferences
 ###
 
-gTotBucket = 100  # total number of task sets
+gTotBucket = 100  # total number of task sets per utilization
 gTasksinBkt = 10  # tasks per set
 
-gUStep = 5  # utilization step [in percent]
+gUStep = 5  # utilization step
 gUStart = 0  # utilization start
 gUEnd = 100  # utilization end
 
 # share from period - wcet for self-suspension:
 gMaxsstype = 0.5  # maximal total self-suspension length
 gMinsstype = 0.0  # minimal total self-suspension length
+
+gSSofftypes = 0  # number of segments does not matter
+
+Ncol = 3  # number of columns in Legend
 
 # Schedulability tests to be run:
 # # EDF Evaluation.
@@ -39,9 +43,11 @@ gMinsstype = 0.0  # minimal total self-suspension length
 
 # # RI arb deadline DM
 # gSchemes = ['RI-var DM D1.0', 'RI-var DM D1.1', 'RI-var DM D1.2', 'RI-var DM D1.5']
+# Ncol = 2
 
 # RI arb deadline EDF
 gSchemes = ['RI-var EDF D1.0', 'RI-var EDF D1.1', 'RI-var EDF D1.2', 'RI-var EDF D1.5']
+Ncol = 2
 
 gPlotdata = True  # flag to plot data
 
@@ -91,8 +97,7 @@ for ischeme in gSchemes:
     for u, tasksets in enumerate(tasksets_difutil, start=0):
         print("Scheme:", ischeme, "Task-sets:", gTotBucket, "Tasks per set:",
               gTasksinBkt, "U:", gUStart + u * gUStep, "SSLength:",
-              str(gMinsstype), " - ", str(gMaxsstype),
-              "Num. of segments:", gSSofftypes)
+              str(gMinsstype), " - ", str(gMaxsstype))
         if u == 0:  # utilization of 0 percent
             y[u] = 1
             continue
@@ -408,7 +413,7 @@ if gPlotdata:
     if len(gSchemes) != 0:
         try:
             effsstsPlot.effsstsPlotAll(gPrefixdata, gPlotall, gSchemes, gMinsstype, gMaxsstype, gSSofftypes,
-                                       gUStart, gUEnd, gUStep, gTasksinBkt)
+                                       gUStart, gUEnd, gUStep, gTasksinBkt, Ncol=Ncol)
         except Exception as e:
             MainWindow.statusBar().showMessage(str(e))
     else:
