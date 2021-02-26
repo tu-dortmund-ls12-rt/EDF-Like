@@ -263,7 +263,7 @@ def effsstsPlotmulti(prefix, plotall, id_par, par_values, schemes, minsstype, ma
             i += 1
 
     fig.suptitle('No. of tasks: '+str(numberoftasks)+', Self-suspension length: ' +
-                    str(minsstype)+"-"+str(maxsstype)+', No. of segments: '+str(ssofftypes), size=16, y=0.99)
+                    str(minsstype)+"-"+str(maxsstype), size=16, y=0.99)
     # ax.grid()
 
     #fig.savefig(prefix+"/"+isstype+"/"+issofftypes +

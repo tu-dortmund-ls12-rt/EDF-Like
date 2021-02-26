@@ -142,6 +142,7 @@ def SSS_seg_gen(vRatio,minCtune,maxCtune,maxnumsegs,minSratio,numpaths,scalef):
 
 
 			itask['period']=math.ceil(itask['period'])
+			itask['deadline'] = math.ceil(itask['deadline'])
 			itask['execution']=maxSumC
 			itask['sslength']=maxSumS
 
@@ -155,12 +156,9 @@ def init():
 	USet=[]
 	PSet=[]
 
-def taskGeneration_p(numTasks,uTotal,minsslength,maxsslength,Pmin=100,numLog=1,vRatio=1,seed=1,numsegs=2,minSratio=1,numpaths=2,scalef=0.8):
+def taskGeneration_p(numTasks,uTotal,minsslength,maxsslength,Pmin=100,numLog=1,vRatio=1,numsegs=2,minSratio=1,numpaths=2,scalef=0.8):
     init()
-    #random.seed() This is called before this function is called
     UUniFast(numTasks,uTotal)
     CSet_generate(Pmin,numLog)
     SSS_seg_gen(vRatio,minsslength,maxsslength,numsegs,minSratio,numpaths,scalef)
     return PSet
-
-
