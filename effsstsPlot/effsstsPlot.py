@@ -5,87 +5,125 @@ import matplotlib.pyplot as plt
 import random
 import math
 
-def pickColor(ischeme):
+
+def pickColor(ischeme):  # TODO adjust
     color = ''
-    if ischeme == 'EDA':
+    if ischeme == 'RI DM':  # --- 1 DM Evaluation.
         color = '#000000'
-    elif ischeme == 'PROPORTIONAL':
-        color = '#800000'
-    elif ischeme == 'PASS-OPA':
-        color = '#000080'
-    elif ischeme == 'SCEDF':
-        color = '#808000'
-    elif ischeme == 'SCRM':
-        color = '#FF69B4'
-    elif ischeme == 'SCAIR':
+    elif ischeme == 'UniFramework':
+        color = '#0000ff'
+    elif ischeme == 'SuspJit':
+        color = '#ff9900'
+    elif ischeme == 'SuspBlock':
+        color = '#33cc33'
+    elif ischeme == 'SuspObl':
+        color = '#ff0066'
+    elif ischeme == 'RI EDF':  # --- 2 EDF Evaluation.
+        color = '#000000'
+    elif ischeme == 'Our EMSoft':
+        color = '#0000ff'
+    elif ischeme == 'Dong and Liu':
+        color = '#ff9900'
+    elif ischeme == 'Liu and Anderson':
+        color = '#33cc33'
+    elif ischeme == 'Susp as Comp':
+        color = '#ff0066'
+    elif ischeme == 'RI EQDF lam=0':  # --- 3 EQDF Evaluation.
+        color = '#6666ff'
+    elif ischeme == 'RI EQDF lam=-1':
+        color = '#b3b3ff'
+    elif ischeme == 'RI EQDF lam=+1':
+        color = '#0000cc'
+    elif ischeme == 'RI EQDF any lam in [-10,10]':
+        color = '#000000'
+    elif ischeme == 'RI SAEDF lam=0':  # --- 4 SAEDF Evaluation.
+        color = '#6666ff'
+    elif ischeme == 'RI SAEDF lam=-1':
+        color = '#b3b3ff'
+    elif ischeme == 'RI SAEDF lam=+1':
+        color = '#0000cc'
+    elif ischeme == 'RI SAEDF any lam in [-10,10]':
+        color = '#000000'
+    elif ischeme in [  # --- 5 Evaluation.
+            'RI-fix DM D1.0', 'RI-var DM D1.0',
+            ]:
+        color = '#99ff99'
+    elif ischeme in [
+            'RI-fix DM D1.1', 'RI-var DM D1.1',
+            ]:
+        color = '#00e600'
+    elif ischeme in [
+            'RI-fix DM D1.2', 'RI-var DM D1.2',
+            ]:
         color = '#008000'
-    elif ischeme == 'MIP':
-        color = '#42F4AA'
-    elif ischeme == 'SCAIR-RM':
-        color = '#A742F4'
-    elif ischeme == 'SCAIR-OPA':
-        color = '#C97089'
-    elif ischeme == 'Combo-SJSB':
-        color = '#B93049'
-    elif ischeme == 'RSS':
-        color = '#816000'
-    elif ischeme.__contains__('SEIFDA-minD'):
-        color = '#0000FF'
-    elif ischeme.__contains__('SEIFDA-PBminD'):
-        color = '#BC4968'
-    elif ischeme.__contains__('SEIFDA-maxD'):
-        color = '#00FFFF'
-    elif ischeme.__contains__('PATH-minD') and ischeme.__contains__('DnD'):
-        color = '#808080'
-    elif ischeme.__contains__('PATH-minD') and ischeme.__contains__('D=D'):
-        color = '#FF0000'
-    elif ischeme.__contains__('PATH-PBminD') and ischeme.__contains__('DnD'):
-        color = '#800080'
-    elif ischeme.__contains__('PATH-PBminD') and ischeme.__contains__('D=D'):
-        color = '#00FF00'
-    else:
+    elif ischeme in [
+            'RI-fix DM D1.5', 'RI-var DM D1.5',
+            ]:
+        color = '#000000'
+    elif ischeme in [  # --- 6 Evaluation.
+            'RI-fix EDF D1.0', 'RI-var EDF D1.0'
+            ]:
+        color = '#ff9980'
+    elif ischeme in [
+            'RI-fix EDF D1.1', 'RI-var EDF D1.1'
+            ]:
+        color = '#ff3300'
+    elif ischeme in [
+            'RI-fix EDF D1.2', 'RI-var EDF D1.2'
+            ]:
+        color = '#b32400'
+    elif ischeme in [
+            'RI-fix EDF D1.5', 'RI-var EDF D1.5'
+            ]:
+        color = '#000000'
+    else:  # --- Other: Randomly.
         color = "#%06x" % random.randint(0, 0xFFFFFF)
-        # color = '#008080'
     return color
 
-def pickMarker(ischeme):
+
+def pickMarker(ischeme):  # TODO adjust
     marker = ''
-    if ischeme == 'EDA':
-        marker = 's'
-    elif ischeme == 'PROPORTIONAL':
-        marker = '1'
-    elif ischeme == 'PASS-OPA':
-        marker = '8'
-    elif ischeme == 'SCEDF':
-        marker = '>'
-    elif ischeme == 'SCRM':
-        marker = '^'
-    elif ischeme == 'SCAIR':
-        marker = 'h'
-    elif ischeme == 'MIP':
-        marker = 'p'
-    elif ischeme == 'SCAIR-RM':
-        marker = '2'
-    elif ischeme == 'SCAIR-OPA':
-        marker = '3'
-    elif ischeme == 'Combo-SJSB':
-        marker = '4'
-    elif ischeme == 'RSS':
-        marker = 'p'
-    elif ischeme.__contains__('SEIFDA-minD'):
+    if ischeme in [
+            'RI DM',
+            'RI EDF',
+            'RI EQDF any lam in [-10,10]',
+            'RI SAEDF any lam in [-10,10]',
+            'RI-fix DM D1.5', 'RI-var DM D1.5',
+            'RI-fix EDF D1.5', 'RI-var EDF D1.5'
+            ]:
         marker = 'o'
-    elif ischeme.__contains__('SEIFDA-PBminD'):
-        marker = 'H'
-    elif ischeme.__contains__('SEIFDA-maxD'):
+    elif ischeme in [
+            'UniFramework',
+            'Our EMSoft',
+            'RI EQDF lam=0',
+            'RI SAEDF lam=0',
+            'RI-fix DM D1.1', 'RI-var DM D1.1',
+            'RI-fix EDF D1.1', 'RI-var EDF D1.1'
+            ]:
         marker = 'x'
-    elif ischeme.__contains__('PATH-minD') and ischeme.__contains__('DnD'):
-        marker = 'D'
-    elif ischeme.__contains__('PATH-minD') and ischeme.__contains__('D=D'):
-        marker = '*'
-    elif ischeme.__contains__('PATH-PBminD') and ischeme.__contains__('DnD'):
-        marker = '+'
-    elif ischeme.__contains__('PATH-PBminD') and ischeme.__contains__('D=D'):
-        marker = 'v'
+    elif ischeme in [
+            'SuspJit',
+            'Dong and Liu',
+            'RI EQDF lam=+1',
+            'RI SAEDF lam=+1',
+            'RI-fix DM D1.2', 'RI-var DM D1.2',
+            'RI-fix EDF D1.2', 'RI-var EDF D1.2'
+            ]:
+        marker = '>'
+    elif ischeme in [
+            'SuspBlock',
+            'Liu and Anderson',
+            'RI EQDF lam=-1',
+            'RI SAEDF lam=-1',
+            'RI-fix DM D1.0', 'RI-var DM D1.0',
+            'RI-fix EDF D1.0', 'RI-var EDF D1.0'
+            ]:
+        marker = '<'
+    elif ischeme in [
+            'SuspObl',
+            'Susp as Comp'
+            ]:
+        marker = '|'
     else:
         randommarker = ['o', 'v', '^', '<', '>', '1', '2', '3', '4', '8', 's',
                         'p', 'P', '*', '+', 'x', 'X', 'D', 'd']
@@ -93,19 +131,67 @@ def pickMarker(ischeme):
         marker = random.choice(randommarker)
     return marker
 
-def pickName(ischeme):
+
+def pickName(ischeme):  # TODO adjust
     name = ''
-    if ischeme.__contains__('PATH-minD') and ischeme.__contains__('DnD'):
-        name = 'Clairvoyant-SSSD'
-    elif ischeme.__contains__('PATH-minD') and ischeme.__contains__('D=D'):
-        name = 'Oblivious-IUB'
-    elif ischeme.__contains__('PATH-PBminD') and ischeme.__contains__('DnD'):
-        name = 'Clairvoyant-PDAB'
-    elif ischeme.__contains__('PATH-PBminD') and ischeme.__contains__('D=D'):
-        name = 'Oblivious-MP'
+    if ischeme == 'UniFramework':  # --- 1 DM Evaluation.
+        name = 'CNH16'
+    elif ischeme == 'RI EDF':  # --- 2 EDF Evaluation.
+        name = 'RI EDF'
+    elif ischeme == 'Our EMSoft':
+        name = 'GBC20'
+    elif ischeme == 'Dong and Liu':
+        name = 'DL16'
+    elif ischeme == 'Liu and Anderson':
+        name = 'LA13'
+    elif ischeme == 'Susp as Comp':
+        name = 'SuspObl'
+    elif ischeme == 'RI EQDF lam=0':  # --- 3 EQDF Evaluation.
+        name = 'RI EQDF $\lambda=0$'
+    elif ischeme == 'RI EQDF lam=-1':
+        name = 'RI EQDF $\lambda=-1$'
+    elif ischeme == 'RI EQDF lam=+1':
+        name = 'RI EQDF $\lambda=+1$'
+    elif ischeme == 'RI EQDF any lam in [-10,10]':
+        name = 'RI EQDF $\lambda \in [-10,10]$'
+    elif ischeme == 'RI SAEDF lam=0':  # --- 4 SAEDF Evaluation.
+        name = 'RI SAEDF $\lambda=0$'
+    elif ischeme == 'RI SAEDF lam=-1':
+        name = 'RI SAEDF $\lambda=-1$'
+    elif ischeme == 'RI SAEDF lam=+1':
+        name = 'RI SAEDF $\lambda=1$'
+    elif ischeme == 'RI SAEDF any lam in [-10,10]':
+        name = 'RI SAEDF $\lambda \in [-10,10]$'
     else:
         name = ischeme
     return name
+
+
+def pickLineStyle(ischeme):
+    if ischeme in [
+            'SuspJit',
+            'SuspBlock',
+            'Dong and Liu',
+            'Liu and Anderson',
+            'RI EQDF lam=-1',
+            'RI EQDF lam=+1',
+            'RI SAEDF lam=-1',
+            'RI SAEDF lam=+1',
+            'RI-fix DM D1.0', 'RI-var DM D1.0',
+            'RI-fix EDF D1.0', 'RI-var EDF D1.0',
+            'RI-fix DM D1.2', 'RI-var DM D1.2',
+            'RI-fix EDF D1.2', 'RI-var EDF D1.2'
+            ]:
+        linestyle = '--'
+    elif ischeme in [
+            'SuspObl',
+            'Susp as Comp',
+            ]:
+        linestyle = ':'
+    else:
+        linestyle = '-'
+    return linestyle
+
 
 def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks,Ncol=3, plotallname=''):
     """
@@ -147,7 +233,7 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
         x=x[us:ue+1]
         y=y[us:ue+1]
         ax.plot(x, y,
-                '-',
+                pickLineStyle(ischeme),
                 color=pickColor(ischeme),
                 marker=pickMarker(ischeme),
                 markersize=4,

@@ -13,7 +13,7 @@ import random
 # global preferences
 ###
 
-gTotBucket = 100  # total number of task sets per utilization
+gTotBucket = 200  # total number of task sets per utilization
 gTasksinBkt = 10  # tasks per set
 
 gUStep = 5  # utilization step
@@ -44,7 +44,7 @@ if len(sys.argv) == 1:
 scheme_flag = sys.argv[1]
 if scheme_flag == '1':
     # 1 DM Evaluation.
-    gSchemes = ['RI DM', 'UniFramework', 'SuspObl', 'SuspJit', 'SuspBlock']
+    gSchemes = ['RI DM', 'UniFramework', 'SuspJit', 'SuspBlock', 'SuspObl']
     plotallname = '1_dm'
 elif scheme_flag == '2':
     # 2 EDF Evaluation.
@@ -53,13 +53,13 @@ elif scheme_flag == '2':
     plotallname = '2_edf'
 elif scheme_flag == '3':
     # 3 EQDF Evaluation.
-    gSchemes = ['RI EQDF lam=0', 'RI EQDF lam=-1', 'RI EQDF lam=+1',
+    gSchemes = ['RI EQDF lam=-1', 'RI EQDF lam=0', 'RI EQDF lam=+1',
                 'RI EQDF any lam in [-10,10]']
     Ncol = 2
     plotallname = '3_eqdf'
 elif scheme_flag == '4':
     # 4 SAEDF Evaluation.
-    gSchemes = ['RI SAEDF lam=0', 'RI SAEDF lam=-1', 'RI SAEDF lam=+1',
+    gSchemes = ['RI SAEDF lam=-1', 'RI SAEDF lam=0', 'RI SAEDF lam=+1',
                 'RI SAEDF any lam in [-10,10]']
     Ncol = 2
     plotallname = '4_saedf'
@@ -213,7 +213,8 @@ for ischeme in gSchemes:
                     numfail += 1
             elif ischeme == 'RI EQDF any lam in [-10,10]':
                 fail_flag = True
-                for lam in range(-10, 11, 1):  # lam range
+                for lam in [0] + list(range(-10, 11, 1)):  # lam range
+                    # (Testing 0 first gives results faster.)
                     RI.set_prio(tasks, prio_policy=101, lam=lam)
                     if RI.RI_fixed(tasks, depth=RI_depth) is True:
                         fail_flag = False
@@ -235,7 +236,8 @@ for ischeme in gSchemes:
                     numfail += 1
             elif ischeme == 'RI SAEDF any lam in [-10,10]':
                 fail_flag = True
-                for lam in range(-10, 11, 1):  # lam range
+                for lam in [0] + list(range(-10, 11, 1)):  # lam range
+                    # (Testing 0 first gives results faster.)
                     RI.set_prio(tasks, prio_policy=201, lam=lam)
                     if RI.RI_fixed(tasks, depth=RI_depth) is True:
                         fail_flag = False
