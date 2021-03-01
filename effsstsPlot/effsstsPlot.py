@@ -211,14 +211,14 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
     ax = fig.add_subplot(111)
     fig.subplots_adjust(top=0.9, left=0.1, right=0.95, hspace=0.3)
 
-    ax.set_xlabel('Utilization (%)', size=15)
-    ax.set_ylabel('Acceptance Ratio', size=15)
+    ax.set_xlabel('Utilization (%)', size=15, fontsize=20)
+    ax.set_ylabel('Acceptance Ratio', size=15, fontsize=20)
     ax.spines['top'].set_color('black')
     ax.spines['bottom'].set_color('black')
     ax.spines['left'].set_color('black')
     ax.spines['right'].set_color('black')
     ax.tick_params(labelcolor='black', top=False,
-                   bottom=False, left=False, right=False)
+                   bottom=False, left=False, right=False, labelsize=16)
 
     i = 1
     for ischeme in schemes:
@@ -236,22 +236,22 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
                 pickLineStyle(ischeme),
                 color=pickColor(ischeme),
                 marker=pickMarker(ischeme),
-                markersize=4,
+                markersize=5,
                 markevery=1,
                 fillstyle='none',
                 label=pickName(ischeme),
                 linewidth=1.0,
                 clip_on=False)
         if i == 1:
-            ax.legend(bbox_to_anchor=(0.5, 1.11),
+            ax.legend(bbox_to_anchor=(0.5, 1.2),
                         loc=10,
                         markerscale=1.5,
                         ncol=Ncol,
                         borderaxespad=0.,
-                        prop={'size': 10})
+                        prop={'size': 16})
 
     ax.set_title('No. of tasks: '+str(numberoftasks)+', Self-suspension length: ' +
-                    str(minsstype)+"-"+str(maxsstype), size=10, y=0.99)
+                    str(minsstype)+"-"+str(maxsstype), size=10, y=0.99, fontsize=20)
     ax.grid()
     i += 1
     #fig.savefig(prefix+"/"+isstype+"/"+issofftypes +
