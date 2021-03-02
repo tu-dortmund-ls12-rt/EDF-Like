@@ -13,10 +13,10 @@ import random
 # global preferences
 ###
 
-gTotBucket = 200  # total number of task sets per utilization
+gTotBucket = 500  # total number of task sets per utilization
 gTasksinBkt = 10  # tasks per set
 
-gUStep = 5  # utilization step
+gUStep = 1  # utilization step
 gUStart = 0  # utilization start
 gUEnd = 100  # utilization end
 
@@ -28,8 +28,8 @@ gSSofftypes = 0  # number of segments does not matter
 
 Ncol = 3  # number of columns in Legend
 
-RI_depth = 3  # depth for RI schedulability test
-RI_max_a = 5  # maximal a for RI schedulability test
+RI_depth = 5  # depth for RI schedulability test
+RI_max_a = 10  # maximal a for RI schedulability test
 
 plotallname = ''
 
