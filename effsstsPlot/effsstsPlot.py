@@ -218,7 +218,7 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
     ax.spines['left'].set_color('black')
     ax.spines['right'].set_color('black')
     ax.tick_params(labelcolor='black', top=False,
-                   bottom=False, left=False, right=False, labelsize=16)
+                   bottom=False, left=False, right=False, labelsize=18)
 
     i = 1
     for ischeme in schemes:
@@ -236,11 +236,11 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
                 pickLineStyle(ischeme),
                 color=pickColor(ischeme),
                 marker=pickMarker(ischeme),
-                markersize=5,
+                markersize=8,
                 markevery=1,
                 fillstyle='none',
                 label=pickName(ischeme),
-                linewidth=1.0,
+                linewidth=1.8,
                 clip_on=False)
         if i == 1:
             ax.legend(bbox_to_anchor=(0.5, 1.2),
@@ -248,7 +248,7 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
                         markerscale=1.5,
                         ncol=Ncol,
                         borderaxespad=0.,
-                        prop={'size': 16})
+                        prop={'size': 18})
 
     ax.set_title('No. of tasks: '+str(numberoftasks)+', Self-suspension length: ' +
                     str(minsstype)+"-"+str(maxsstype), size=10, y=0.99, fontsize=20)
