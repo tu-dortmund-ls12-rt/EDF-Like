@@ -276,103 +276,6 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
     #sys.exit()
 
 
-def effsstsPlotmulti(prefix, plotall, id_par, par_values, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks):
-    """
-    prints all plots
-    """
-    # sstype= ['S','M','L','0.15']
-    # ssofftypes = [2, 3, 5]
-    ssoprops = ['2', '5', '8']
-
-    figlabel = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
-    # prefix="effsstsPlot/data/"
-
-    # for three sub-plot, fixed
-    # fig = plt.figure(figsize=(13, 4))
-    #fig = plt.figure()
-    # create a virtual outer subsplot for putting big x-ylabel
-    # ax = fig.add_subplot(111)
-    # fig.subplots_adjust(top=0.9, left=0.1, right=0.95, hspace=0.3)
-    if id_par == 'Tasks per set':
-        numberoftasks = par_values
-
-    elif id_par == 'Number of Segments':
-        ssofftypes = par_values
-        print
-        'ns1: ', ssofftypes[0]
-    elif id_par == 'Suspension Length':
-        minsstype = par_values[0:3]
-        maxsstype = par_values[3:6]
-
-    fig = plt.figure(figsize=(18, 12))
-    for c in range(3):
-        ax = fig.add_subplot(2, 3, (c + 1))
-
-        ax.set_xlabel('Utilization (%)', size=10)
-        ax.set_ylabel('Acceptance Ratio', size=10)
-        ax.spines['top'].set_color('black')
-        ax.spines['bottom'].set_color('black')
-        ax.spines['left'].set_color('black')
-        ax.spines['right'].set_color('black')
-        ax.tick_params(labelcolor='black', top=False,
-                       bottom=False, left=False, right=False)
-        i = 1
-        for ischeme in schemes:
-            if id_par == 'Tasks per set':
-                ifile = prefix + "/" + str(minsstype) + "-" + str(maxsstype) + "/" + str(
-                    ssofftypes) + "/" + ischeme + str(numberoftasks[c]) + ".npy"
-            elif id_par == 'Number of Segments':
-                ifile = prefix + "/" + str(minsstype) + "-" + str(maxsstype) + "/" + str(
-                    ssofftypes[c]) + "/" + ischeme + str(numberoftasks) + ".npy"
-            elif id_par == 'Suspension Length':
-                ifile = prefix + "/" + str(minsstype[c]) + "-" + str(maxsstype[c]) + "/" + str(
-                    ssofftypes) + "/" + ischeme + str(numberoftasks) + ".npy"
-            data = np.load(ifile)
-            x = data[0][0::1]
-            y = data[1][0::1]
-            us = int(math.ceil(ustart/ustep))
-            ue = int(math.floor(uend/ustep))
-            print(x)
-            print(y)
-            x=x[us:ue+1]
-            y=y[us:ue+1]
-            ax.plot(x, y,
-                    '-',
-                    color=pickColor(ischeme),
-                    marker=pickMarker(ischeme),
-                    markersize=4,
-                    markevery=1,
-                    fillstyle='none',
-                    label=pickName(ischeme),
-                    linewidth=1.0,
-                    clip_on=False)
-            if c==1:
-                ax.legend(bbox_to_anchor=(0.5, 1.11),
-                          loc=10,
-                          markerscale=1.5,
-                          ncol=3,
-                          borderaxespad=0.,
-                          prop={'size': 10})
-            if i == 1:
-                ax.grid()
-            i += 1
-
-    fig.suptitle('No. of tasks: '+str(numberoftasks)+', Self-suspension length: ' +
-                    str(minsstype)+"-"+str(maxsstype), size=16, y=0.99)
-    # ax.grid()
-
-    #fig.savefig(prefix+"/"+isstype+"/"+issofftypes +
-        #           "/"+ischeme+".pdf", bbox_inches='tight')
-
-    #plt.show()
-    if plotall:
-        fig.savefig(prefix + '/EFFSSTS[' + str(ssofftypes) + '][' + str(minsstype)+"-"+str(maxsstype) + '][' + str(numberoftasks) + '].pdf', bbox_inches='tight')
-        print('[DONE]', '/' + prefix + '/EFFSSTS[' + str(ssofftypes) + '][' + str(minsstype)+"-"+str(maxsstype) + '][' + str(numberoftasks) + '].pdf')
-    else:
-        fig.savefig(prefix + '/' + schemes[0] + '[' + str(ssofftypes) + '][' + str(minsstype)+"-"+str(maxsstype) + '][' + str(numberoftasks) + '].pdf', bbox_inches='tight')
-        print('[DONE]', '/' + prefix + '/' + schemes[0] + '[' +  str(ssofftypes) + '][' + str(minsstype)+"-"+str(maxsstype) + '][' + str(numberoftasks) + '].pdf')
-
-
 def effsstsPlotAll(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=3, plotsingle=True, plotallname=''):
     print('-------------------------------------------------------')
     print(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep,numberoftasks)
@@ -384,16 +287,10 @@ def effsstsPlotAll(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, u
         effsstsPlot(prefix, True, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=Ncol, plotallname=plotallname)
 
 
-def effsstsPlotAllmulti(prefix, plotall, id_par, par_values, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks):
-    print('-------------------------------------------------------')
-    print(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep,numberoftasks)
-    print('-------------------------------------------------------')
-    for scheme in schemes:
-        effsstsPlotmulti(prefix, False, id_par, par_values, scheme.split(), minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks)
-    if (plotall):
-        effsstsPlotmulti(prefix, True, id_par, par_values, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks)
-
-def effsstsPlotRuntime(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=3, plotallname=' '):
+def effsstsPlotRuntime(
+        prefix, schemes, num_tasks_start, num_tasks_end, num_tasks_step,
+        Ncol=3, plotallname=' ', method='avg', ylabel='Runtime (s)',
+        show_legend=True):
     """
     Runtime eval
     """
@@ -412,7 +309,7 @@ def effsstsPlotRuntime(prefix, plotall, schemes, minsstype, maxsstype, ssofftype
     fig.subplots_adjust(top=0.9, left=0.1, right=0.95, hspace=0.3)
 
     ax.set_xlabel('#Tasks', size=15, fontsize=23)
-    ax.set_ylabel('Runtime (s)', size=15, fontsize=23)
+    ax.set_ylabel(ylabel, size=15, fontsize=23)
     ax.spines['top'].set_color('black')
     ax.spines['bottom'].set_color('black')
     ax.spines['left'].set_color('black')
@@ -422,16 +319,19 @@ def effsstsPlotRuntime(prefix, plotall, schemes, minsstype, maxsstype, ssofftype
 
     i = 1
     for ischeme in schemes:
-        ifile = prefix+"/"+str(minsstype)+"-"+str(maxsstype)+"/"+str(ssofftypes)+"/"+ ischeme + str(numberoftasks) + '_runtime' +".npy"  # TODO ADJUST
-        data = np.load(ifile)
-        x = data[0][0::1]
-        y = data[1][0::1]
-        us = int(math.ceil(ustart/ustep))
-        ue = int(math.floor(uend/ustep))
+        x = []
+        y = []
+        for numberoftasks in range(num_tasks_start, num_tasks_end, num_tasks_step):
+            ifile = prefix+"/" + ischeme + str(numberoftasks) + '_runtime' + ".npy"
+            data = np.load(ifile)
+            x.append(numberoftasks)
+            if method == 'avg':
+                y.append(np.average(data))
+            elif method == 'max':
+                y.append(np.max(data))
         print(x)
         print(y)
-        x=x[us:ue+1]
-        y=y[us:ue+1]
+
         ax.plot(x, y,
                 pickLineStyle(ischeme),
                 color=pickColor(ischeme),
@@ -443,23 +343,25 @@ def effsstsPlotRuntime(prefix, plotall, schemes, minsstype, maxsstype, ssofftype
                 linewidth=1.8,
                 clip_on=False)
         if i == 1:
-            ax.legend(
-                bbox_to_anchor=(0.42, 1.15),
-                loc=10,
-                markerscale=1.3,
-                ncol=Ncol,
-                borderaxespad=0.,
-                labelspacing=0.2,  # space between rows
-                handlelength=1.8,  # length of the legend line under marker
-                handletextpad=0.5,  # space between handle and text
-                columnspacing=1.,  # space between columns
-                prop={'size': 20})
+            if show_legend is True:
+                ax.legend(
+                    bbox_to_anchor=(0.42, 1.15),
+                    loc=10,
+                    markerscale=1.3,
+                    ncol=Ncol,
+                    borderaxespad=0.,
+                    labelspacing=0.2,  # space between rows
+                    handlelength=1.8,  # length of the legend line under marker
+                    handletextpad=0.5,  # space between handle and text
+                    columnspacing=1.,  # space between columns
+                    prop={'size': 20})
+
+    # ax.set_yscale('log')  # log scale
 
     ax.grid()
     i += 1
 
     fig.savefig(prefix + '/' + plotallname + '.pdf', bbox_inches='tight')
-    print('[DONE]', '/' + prefix + '/' + schemes[0] + '[' +  str(ssofftypes) + '][' + str(minsstype)+"-"+str(maxsstype) + '][' + str(numberoftasks) + '].pdf')
 
 if __name__ == '__main__':
     args = sys.argv
