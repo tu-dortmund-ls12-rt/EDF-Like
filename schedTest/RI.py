@@ -11,10 +11,12 @@ def set_prio(tasks, prio_policy=0, lam=0):
         # Popular.
         if prio_policy == 1:  # FIFO:
             task['prio_shift'] = 0
-        elif prio_policy == 2:  # DM: (for 1 DM Evaluation and 5 Arb deadline DM Evaluation)
+        # DM: (for 1 DM Evaluation and 5 Arb deadline DM Evaluation)
+        elif prio_policy == 2:
             p += task['deadline']
             task['prio_shift'] = p
-        elif prio_policy == 3:  # EDF (for 2 EDF Evaluation and 6 Arb deadline EDF Evaluation.)
+        # EDF (for 2 EDF Evaluation and 6 Arb deadline EDF Evaluation.)
+        elif prio_policy == 3:
             task['prio_shift'] = task['deadline']
         # Try-out other priority shifts.
         elif prio_policy == 11:
@@ -28,9 +30,11 @@ def set_prio(tasks, prio_policy=0, lam=0):
         elif prio_policy == 15:
             task['prio_shift'] = task['execution'] * task['sslength']
         elif prio_policy == 16:
-            task['prio_shift'] = task['deadline'] * (task['execution'] + 0.15 * task['sslength'])
+            task['prio_shift'] = task['deadline'] * \
+                (task['execution'] + 0.15 * task['sslength'])
         elif prio_policy == 17:
-            task['prio_shift'] = (task['deadline']+0.5*task['sslength'])*task['execution']
+            task['prio_shift'] = (task['deadline']+0.5 *
+                                  task['sslength'])*task['execution']
         # 3 EQDF Evaluation.
         elif prio_policy == 101:
             task['prio_shift'] = task['deadline'] + lam*task['execution']
@@ -90,14 +94,15 @@ def RI_fixed(tasks, eta=0.01, depth=3, setprio=0):
                 # Compute one candidate.
                 val = 0
                 val += ceil(
-                    (ord_tasks[indk]['deadline']-valb)/ord_tasks[indk]['period']
-                    )*(ord_tasks[indk]['execution']+ord_tasks[indk]['sslength'])
+                    (ord_tasks[indk]['deadline']-valb) /
+                    ord_tasks[indk]['period']
+                )*(ord_tasks[indk]['execution']+ord_tasks[indk]['sslength'])
                 for indi in range(len(ord_tasks)):
                     if indi == indk:  # only consider i != k
                         continue
                     val += max(ceil(
-                            (G[indi] + resp[indi] - valb)/ord_tasks[indi]['period']
-                            ), 0) * ord_tasks[indi]['execution']
+                        (G[indi] + resp[indi] - valb)/ord_tasks[indi]['period']
+                    ), 0) * ord_tasks[indi]['execution']
                 val += valb
 
                 # Add candidate to list.
@@ -175,14 +180,16 @@ def RI_var(tasks, eta=0.01, max_a=1, depth=3, setprio=0):
                     # Compute one candidate.
                     val = 0
                     val += min(inda+1, ceil(
-                        (ord_tasks[indk]['deadline']-valb + inda * ord_tasks[indk]['period'])/ord_tasks[indk]['period']
-                        ))*(ord_tasks[indk]['execution']+ord_tasks[indk]['sslength'])
+                        (ord_tasks[indk]['deadline']-valb + inda *
+                         ord_tasks[indk]['period'])/ord_tasks[indk]['period']
+                    ))*(ord_tasks[indk]['execution']+ord_tasks[indk]['sslength'])
                     for indi in range(len(ord_tasks)):
                         if indi == indk:  # only consider i != k
                             continue
                         val += max(ceil(
-                                (G[indi] + resp[indi] - valb + inda*ord_tasks[indk]['period'])/ord_tasks[indi]['period']
-                                ), 0) * ord_tasks[indi]['execution']
+                            (G[indi] + resp[indi] - valb + inda*ord_tasks[indk]
+                             ['period'])/ord_tasks[indi]['period']
+                        ), 0) * ord_tasks[indi]['execution']
                     val += valb - inda * ord_tasks[indk]['period']
 
                     # Add candidate to list.
@@ -202,11 +209,12 @@ def RI_var(tasks, eta=0.01, max_a=1, depth=3, setprio=0):
                     breakpoint()
 
                 # Check schedulability condition.
-                if resp_cand <= ord_tasks[indk]['period']:
-                    resp[indk] = min(resp_a)  # WCRT upper bound
-                    break
                 if resp_cand > ord_tasks[indk]['deadline'] or inda == max_a:
                     solved = False
                     resp[indk] = ord_tasks[indk]['deadline']
                     break
+                if resp_cand <= ord_tasks[indk]['period']:
+                    resp[indk] = min(resp_a)  # WCRT upper bound
+                    break
+
     return solved
