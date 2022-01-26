@@ -209,16 +209,17 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
     fig = plt.figure()
     # create a virtual outer subsplot for putting big x-ylabel
     ax = fig.add_subplot(111)
-    fig.subplots_adjust(top=0.9, left=0.1, right=0.95, hspace=0.3)
+    fig.subplots_adjust(top=0.8, left=0.2, right=0.95, bottom=0.2, hspace=0.3)
 
-    ax.set_xlabel('Utilization (%)', size=23)#, fontsize=23)
-    ax.set_ylabel('Acceptance Ratio', size=23)#, fontsize=23)
+    ax.set_xlabel('Utilization (%)', size=23)
+    ax.set_ylabel('Acceptance Ratio', size=23)
     ax.spines['top'].set_color('black')
     ax.spines['bottom'].set_color('black')
     ax.spines['left'].set_color('black')
     ax.spines['right'].set_color('black')
     ax.tick_params(labelcolor='black', top=False,
                    bottom=False, left=False, right=False, labelsize=22)
+    ax.set_yticks([0, 0.25, 0.50, 0.75, 1.0])
 
     i = 1
     for ischeme in schemes:
@@ -253,7 +254,7 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
                 handlelength=1.8,  # length of the legend line under marker
                 handletextpad=0.5,  # space between handle and text
                 columnspacing=1.,  # space between columns
-                prop={'size': 20})
+                prop={'size': 18})
 
     # ax.set_title('No. of tasks: '+str(numberoftasks)+', Self-suspension length: ' +
                     # str(minsstype)+"-"+str(maxsstype), size=10, y=0.99, fontsize=20)
