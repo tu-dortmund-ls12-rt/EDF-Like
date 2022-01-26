@@ -118,6 +118,7 @@ def plot_results(
                 gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol=Ncol,
                 plotsingle=gPlotsingle, plotallname=plotallname)
         except Exception as e:
+            print(e)
             return False
     else:
         MainWindow.statusBar().showMessage('There is no plot to draw.')
@@ -375,6 +376,16 @@ def check(ischeme, tasks):
 
     return numfail
 # end check function
+
+
+# break if can be plotted directly
+if gPlotdata:
+    # Plot data after Evaluation results.
+    if plot_results(
+            gPrefixdata, gPlotall, gSchemes, gMinsstype, gMaxsstype,
+            gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol,
+            gPlotsingle, plotallname) is True:
+        quit()
 
 
 # Iterate though schedulability tests

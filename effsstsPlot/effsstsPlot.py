@@ -211,8 +211,8 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
     ax = fig.add_subplot(111)
     fig.subplots_adjust(top=0.9, left=0.1, right=0.95, hspace=0.3)
 
-    ax.set_xlabel('Utilization (%)', size=15, fontsize=23)
-    ax.set_ylabel('Acceptance Ratio', size=15, fontsize=23)
+    ax.set_xlabel('Utilization (%)', size=23)#, fontsize=23)
+    ax.set_ylabel('Acceptance Ratio', size=23)#, fontsize=23)
     ax.spines['top'].set_color('black')
     ax.spines['bottom'].set_color('black')
     ax.spines['left'].set_color('black')
