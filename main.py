@@ -1,5 +1,5 @@
 from __future__ import division
-from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF, Audsley, UniFramework, FP_Analyses
+from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF, UniFramework, FP_Analyses
 from effsstsPlot import effsstsPlot
 
 import numpy as np
@@ -16,10 +16,36 @@ from itertools import repeat
 # Global preferences.
 ###
 
-gTotBucket = 500  # total number of task sets per utilization
-gTasksinBkt = 50  # tasks per set
+# # == Configuration from the experiments == #
+#
+# gTotBucket = 500  # total number of task sets per utilization
+# gTasksinBkt = 50  # tasks per set
+#
+# gUStep = 5  # utilization step
+# gUStart = 0  # utilization start
+# gUEnd = 100  # utilization end
+#
+# # Share from period - wcet for self-suspension:
+# gMaxsstype = 0.5  # maximal total self-suspension length
+# gMinsstype = 0.0  # minimal total self-suspension length
+#
+# gSSofftypes = 0  # number of segments does not matter
+#
+# Ncol = 3  # number of columns in Legend
+#
+# RI_depth = 5  # depth for RI schedulability test
+# RI_max_a = 10  # maximal a for RI schedulability test
+#
+# num_processors = 100  # number of processors for the evaluation
+#
+# plotallname = ''
 
-gUStep = 5  # utilization step
+# == Simplified configurations for quick check == #
+
+gTotBucket = 10  # total number of task sets per utilization
+gTasksinBkt = 3  # tasks per set
+
+gUStep = 50  # utilization step
 gUStart = 0  # utilization start
 gUEnd = 100  # utilization end
 
@@ -31,10 +57,10 @@ gSSofftypes = 0  # number of segments does not matter
 
 Ncol = 3  # number of columns in Legend
 
-RI_depth = 5  # depth for RI schedulability test
-RI_max_a = 10  # maximal a for RI schedulability test
+RI_depth = 2  # depth for RI schedulability test
+RI_max_a = 2  # maximal a for RI schedulability test
 
-num_processors = 100  # number of processors for the evaluation
+num_processors = 6  # number of processors for the evaluation
 
 plotallname = ''
 
@@ -98,85 +124,22 @@ else:
 
 
 # Plotting preferences.
-gPlotdata = True  # flag to plot data
-gPlotall = True
-gPlotsingle = False
 gPrefixdata = "effsstsPlot/Data"  # path to store data
 
 
 # Help function to plot results.
 def plot_results(
-        gPrefixdata, gPlotall, gSchemes, gMinsstype, gMaxsstype,
-        gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol,
-        gPlotsingle, plotallname):
+        gPrefixdata, gSchemes, gMinsstype, gMaxsstype,
+        gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol, plotallname):
     """ Plot the results.
     """
-    if len(gSchemes) != 0:
-        try:
-            effsstsPlot.effsstsPlotAll(
-                gPrefixdata, gPlotall, gSchemes, gMinsstype, gMaxsstype,
-                gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol=Ncol,
-                plotsingle=gPlotsingle, plotallname=plotallname)
-        except Exception as e:
-            print(e)
-            return False
-    else:
-        MainWindow.statusBar().showMessage('There is no plot to draw.')
-    return True
-
-
-if gPlotdata:
-    # If data can be used, plot directly.
-    if plot_results(
-            gPrefixdata, gPlotall, gSchemes, gMinsstype, gMaxsstype,
-            gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol,
-            gPlotsingle, plotallname) is True:
-        quit()
-
-###
-# Create Task sets
-###
-random.seed(331)  # same task sets for each plot
-
-tasksets_difutil = []  # task set differentiated by utilization
-
-for u in range(gUStart, gUEnd, gUStep):
-    tasksets = []
-    for i in range(0, gTotBucket, 1):
-        percentageU = u / 100
-        # Create task set with predefined parameters.
-        tasks = tgPath.taskGeneration_p(gTasksinBkt, percentageU, gMinsstype,
-                                        gMaxsstype, vRatio=1,
-                                        numLog=int(2))
-        # Sort tasks by period.
-        sortedTasks = sorted(tasks, key=lambda item: item['period'])
-        tasksets.append(sortedTasks)  # add
-        for itask in tasks:
-            if itask['period'] != itask['deadline']:
-                print('period and deadline are different')
-                breakpoint()
-    tasksets_difutil.append(tasksets)  # add
-
-# breakpoint()
-
-###
-# Schedulability tests
-###
-
-# # --- bug testing
-# for tasksets in tasksets_difutil:
-#     for tasks in tasksets:
-#         RI.set_prio(tasks, prio_policy=2)
-#         if RI.RI_fixed(tasks, depth=RI_depth) != RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a):
-#             breakpoint()
-#     print('done')
-# quit()
-# # ---
-
-### define function for multiprocessing ###
-
+    effsstsPlot.effsstsPlotAll(
+        gPrefixdata, True, gSchemes, gMinsstype, gMaxsstype,
+        gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol=Ncol,
+        plotsingle=False, plotallname=plotallname)
 
 def check(ischeme, tasks):
+    """Check function to apply multiprocessing."""
     numfail = 0
     # --- 1 DM Evaluation. ---
     if ischeme == 'EL DM':  # RI scheduling
@@ -378,67 +341,84 @@ def check(ischeme, tasks):
 # end check function
 
 
-# break if can be plotted directly
-if gPlotdata:
-    # Plot data after Evaluation results.
-    if plot_results(
-            gPrefixdata, gPlotall, gSchemes, gMinsstype, gMaxsstype,
-            gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol,
-            gPlotsingle, plotallname) is True:
-        quit()
+if __name__ == '__main__':
 
+    ###
+    # Create Task sets
+    ###
+    random.seed(331)  # same task sets for each plot
 
-# Iterate though schedulability tests
-for ischeme in gSchemes:
-    x = np.arange(gUStart, gUEnd+1, gUStep)
-    print(x)
-    y = np.zeros(int((gUEnd-gUStart) / gUStep) + 1)
-    print(y)
+    tasksets_difutil = []  # task set differentiated by utilization
 
-    ifskip = False  # skip flag when 0 is reached
+    for u in range(gUStart, gUEnd, gUStep):
+        tasksets = []
+        for i in range(0, gTotBucket, 1):
+            percentageU = u / 100
+            # Create task set with predefined parameters.
+            tasks = tgPath.taskGeneration_p(gTasksinBkt, percentageU, gMinsstype,
+                                            gMaxsstype, vRatio=1,
+                                            numLog=int(2))
+            # Sort tasks by period.
+            sortedTasks = sorted(tasks, key=lambda item: item['period'])
+            tasksets.append(sortedTasks)  # add
+            for itask in tasks:
+                if itask['period'] != itask['deadline']:
+                    print('period and deadline are different')
+                    breakpoint()
+        tasksets_difutil.append(tasksets)  # add
 
-    # Iterate through taskset.
-    for u, tasksets in enumerate(tasksets_difutil, start=0):
-        print("Scheme:", ischeme, "Task-sets:", gTotBucket, "Tasks per set:",
-              gTasksinBkt, "U:", gUStart + u * gUStep, "SSLength:",
-              str(gMinsstype), " - ", str(gMaxsstype))
-        if u == 0:  # utilization of 0 percent
-            y[u] = 1
-            continue
-        if u * gUStep == 100:  # utilization 100 percent
-            y[u] = 0
-            continue
-        if ifskip:  # skip iteration when flag is done
-            print("acceptanceRatio:", 0)
-            y[u] = 0
-            continue
+    ###
+    # Schedulability tests
+    ###
+    for ischeme in gSchemes:
+        x = np.arange(gUStart, gUEnd+1, gUStep)
+        print(x)
+        y = np.zeros(int((gUEnd-gUStart) / gUStep) + 1)
+        print(y)
 
-        numfail = 0  # number of fails
+        ifskip = False  # skip flag when 0 is reached
 
-        with Pool(num_processors) as p:
-            fails = p.starmap(check, zip(repeat(ischeme), tasksets))
-        numfail = sum(fails)
+        # Iterate through taskset.
+        for u, tasksets in enumerate(tasksets_difutil, start=0):
+            print("Scheme:", ischeme, "Task-sets:", gTotBucket, "Tasks per set:",
+                  gTasksinBkt, "U:", gUStart + u * gUStep, "SSLength:",
+                  str(gMinsstype), " - ", str(gMaxsstype))
+            if u == 0:  # utilization of 0 percent
+                y[u] = 1
+                continue
+            if u * gUStep == 100:  # utilization 100 percent
+                y[u] = 0
+                continue
+            if ifskip:  # skip iteration when flag is done
+                print("acceptanceRatio:", 0)
+                y[u] = 0
+                continue
 
-        acceptanceRatio = 1 - (numfail / len(tasksets))
-        print("acceptanceRatio:", acceptanceRatio)
-        y[u] = acceptanceRatio
-        # if acceptanceRatio == 0:
-        #     ifskip = True
+            numfail = 0  # number of fails
 
-    plotPath = (gPrefixdata + '/' + str(gMinsstype) + '-' + str(gMaxsstype)
-                + '/' + str(gSSofftypes) + '/')
-    plotfile = (gPrefixdata + '/' + str(gMinsstype) + '-' + str(gMaxsstype)
-                + '/' + str(gSSofftypes) + '/' + ischeme + str(gTasksinBkt))
+            with Pool(num_processors) as p:
+                fails = p.starmap(check, zip(repeat(ischeme), tasksets))
+            numfail = sum(fails)
 
-    # Store results
-    if not os.path.exists(plotPath):
-        os.makedirs(plotPath)
-    np.save(plotfile, np.array([x, y]))
+            acceptanceRatio = 1 - (numfail / len(tasksets))
+            print("acceptanceRatio:", acceptanceRatio)
+            y[u] = acceptanceRatio
+            # if acceptanceRatio == 0:
+            #     ifskip = True
 
-if gPlotdata:
-    # Plot data after Evaluation results.
-    if plot_results(
-            gPrefixdata, gPlotall, gSchemes, gMinsstype, gMaxsstype,
-            gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol,
-            gPlotsingle, plotallname) is True:
-        quit()
+        plotPath = (gPrefixdata + '/' + str(gMinsstype) + '-' + str(gMaxsstype)
+                    + '/' + str(gSSofftypes) + '/')
+        plotfile = (gPrefixdata + '/' + str(gMinsstype) + '-' + str(gMaxsstype)
+                    + '/' + str(gSSofftypes) + '/' + ischeme + str(gTasksinBkt))
+
+        # Store results
+        if not os.path.exists(plotPath):
+            os.makedirs(plotPath)
+        np.save(plotfile, np.array([x, y]))
+
+    ###
+    # Plot.
+    ###
+
+    plot_results(gPrefixdata, gSchemes, gMinsstype, gMaxsstype, gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol,
+                 plotallname)
