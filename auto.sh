@@ -10,3 +10,5 @@ python3 main.py 5a
 python3 main.py 5b
 python3 main.py 6a
 python3 main.py 6b
+
+python3 runtime.py 1
