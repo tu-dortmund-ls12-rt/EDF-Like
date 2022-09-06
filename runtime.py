@@ -1,16 +1,16 @@
-from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF, UniFramework, FP_Analyses
-from effsstsPlot import effsstsPlot
+from schedTest import tgPath  # Task generation from SSSEvaluation
+from schedTest import RTEDF, UDLEDF, SCEDF, WLAEDF, UniFramework, FP_Analyses  # Analyses from SSSEvaluation
+from schedTest import RI  # Our analysis
+from effsstsPlot import effsstsPlot  # Plot function from SSSEvaluation
 
+# other packages
 import numpy as np
 import os
 import sys
-
 import random
-
 import time
-
-from multiprocessing import Pool
 from itertools import repeat
+from multiprocessing import Pool  # multiprocessing
 
 ###
 # Global preferences.

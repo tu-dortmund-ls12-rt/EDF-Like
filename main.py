@@ -1,127 +1,15 @@
-from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF, UniFramework, FP_Analyses
-from effsstsPlot import effsstsPlot
+from schedTest import tgPath  # Task generation from SSSEvaluation
+from schedTest import RTEDF, UDLEDF, SCEDF, WLAEDF, UniFramework, FP_Analyses  # Analyses from SSSEvaluation
+from schedTest import RI  # Our analysis
+from effsstsPlot import effsstsPlot  # Plot function from SSSEvaluation
 
 import numpy as np
 import os
 import sys
-
 import random
-
 from multiprocessing import Pool
 from itertools import repeat
-
-###
-# Global preferences.
-###
-
-# # == Configuration from the experiments == #
-#
-# gTotBucket = 500  # total number of task sets per utilization
-# gTasksinBkt = 50  # tasks per set
-#
-# gUStep = 5  # utilization step
-# gUStart = 0  # utilization start
-# gUEnd = 100  # utilization end
-#
-# # Share from period - wcet for self-suspension:
-# gMaxsstype = 0.5  # maximal total self-suspension length
-# gMinsstype = 0.0  # minimal total self-suspension length
-#
-# gSSofftypes = 0  # number of segments does not matter
-#
-# Ncol = 3  # number of columns in Legend
-#
-# RI_depth = 5  # depth for RI schedulability test
-# RI_max_a = 10  # maximal a for RI schedulability test
-#
-# num_processors = 100  # number of processors for the evaluation
-#
-# plotallname = ''
-
-# == Simplified configurations for quick check == #
-
-gTotBucket = 10  # total number of task sets per utilization
-gTasksinBkt = 3  # tasks per set
-
-gUStep = 50  # utilization step
-gUStart = 0  # utilization start
-gUEnd = 100  # utilization end
-
-# Share from period - wcet for self-suspension:
-gMaxsstype = 0.5  # maximal total self-suspension length
-gMinsstype = 0.0  # minimal total self-suspension length
-
-gSSofftypes = 0  # number of segments does not matter
-
-Ncol = 3  # number of columns in Legend
-
-RI_depth = 2  # depth for RI schedulability test
-RI_max_a = 2  # maximal a for RI schedulability test
-
-num_processors = 6  # number of processors for the evaluation
-
-plotallname = ''
-
-# Schedulability tests to be run:
-scheme_flag_options = ['1', '2', '3', '4', '5a', '5b', '6a', '6b']
-
-if len(sys.argv) == 1:
-    print('Please provide additional argument to choose schedulability tests.')
-    print('Please choose from:', scheme_flag_options)
-    quit()
-
-scheme_flag = sys.argv[1]
-if scheme_flag == '1':
-    # 1 DM Evaluation.
-    gSchemes = ['EL DM', 'UniFramework', 'SuspJit', 'SuspBlock', 'SuspObl']
-    plotallname = '1_dm'
-elif scheme_flag == '2':
-    # 2 EDF Evaluation.
-    gSchemes = ['EL EDF', 'Our EMSoft', 'Liu and Anderson',
-                'Susp as Comp']
-    plotallname = '2_edf'
-elif scheme_flag == '3':
-    # 3 EQDF Evaluation.
-    gSchemes = ['EL EQDF lam=-1', 'EL EQDF lam=0', 'EL EQDF lam=+1',
-                'EL EQDF any lam in [-10,10]']
-    Ncol = 2
-    plotallname = '3_eqdf'
-elif scheme_flag == '4':
-    # 4 SAEDF Evaluation.
-    gSchemes = ['EL SAEDF lam=-1', 'EL SAEDF lam=0', 'EL SAEDF lam=+1',
-                'EL SAEDF any lam in [-10,10]']
-    Ncol = 2
-    plotallname = '4_saedf'
-elif scheme_flag == '5a':
-    # 5a Arb deadline DM Evaluation.
-    gSchemes = ['EL-fix DM D1.0', 'EL-fix DM D1.1', 'EL-fix DM D1.2',
-                'EL-fix DM D1.5']
-    Ncol = 2
-    plotallname = '5a_arb_dl_dm'
-elif scheme_flag == '5b':
-    # 5b Arb deadline DM Evaluation.
-    gSchemes = ['EL-var DM D1.0', 'EL-var DM D1.1', 'EL-var DM D1.2',
-                'EL-var DM D1.5']
-    Ncol = 2
-    plotallname = '5b_arb_dl_dm'
-elif scheme_flag == '6a':
-    # 6a Arb deadline EDF Evaluation.
-    gSchemes = ['EL-fix EDF D1.0', 'EL-fix EDF D1.1', 'EL-fix EDF D1.2',
-                'EL-fix EDF D1.5']
-    Ncol = 2
-    plotallname = '6a_arb_dl_edf'
-elif scheme_flag == '6b':
-    # 6b Arb deadline EDF Evaluation.
-    gSchemes = ['EL-var EDF D1.0', 'EL-var EDF D1.1', 'EL-var EDF D1.2',
-                'EL-var EDF D1.5']
-    Ncol = 2
-    plotallname = '6b_arb_dl_edf'
-else:
-    print('No valid argument. Please choose from:', scheme_flag_options)
-    quit()
-
-# Plotting preferences.
-gPrefixdata = "effsstsPlot/Data"  # path to store data
+from argparse import ArgumentParser
 
 
 # Help function to plot results.
@@ -136,7 +24,7 @@ def plot_results(
         plotsingle=False, plotallname=plotallname)
 
 
-def check(ischeme, tasks):
+def check(ischeme, tasks, RI_depth=None, RI_max_a=None):
     """Check function to apply multiprocessing."""
     numfail = 0
     # --- 1 DM Evaluation. ---
@@ -338,15 +226,131 @@ def check(ischeme, tasks):
     return numfail
 
 
-# end check function
-
-
 if __name__ == '__main__':
+    ###
+    # Options
+    ###
+    parser = ArgumentParser()
+    parser.add_argument("-q", "--quick", dest="quick", action="store_true", default=False,
+                        help="Run only a small configuration to test that the program runs. Otherwise, the full evaluation is performed.")
+    parser.add_argument("-p", "--processes", dest="proc", type=int,
+                        help="Specify the number of concurrent processes.")
+    parser.add_argument("scheme", help="Choose a scheme flag option from: [1, 2, 3, 4, 5a, 5b, 6a, 6b]")
+    args = vars(parser.parse_args())
+
+    ###
+    # Global variables
+    ###
+    if args["quick"]:  # Quick setting to check if the program runs completely without Error.
+        gTotBucket = 10  # total number of task sets per utilization
+        gTasksinBkt = 3  # tasks per set
+
+        gUStep = 50  # utilization step
+        gUStart = 0  # utilization start
+        gUEnd = 100  # utilization end
+
+        # Share from period - wcet for self-suspension:
+        gMaxsstype = 0.5  # maximal total self-suspension length
+        gMinsstype = 0.0  # minimal total self-suspension length
+
+        gSSofftypes = 0  # number of segments does not matter
+
+        Ncol = 3  # number of columns in Legend
+
+        RI_depth = 2  # depth for RI schedulability test
+        RI_max_a = 2  # maximal a for RI schedulability test
+
+        num_processors = 6  # number of processors for the evaluation
+
+    else:  # Full evaluation.
+        gTotBucket = 500  # total number of task sets per utilization
+        gTasksinBkt = 50  # tasks per set
+
+        gUStep = 5  # utilization step
+        gUStart = 0  # utilization start
+        gUEnd = 100  # utilization end
+
+        # Share from period - wcet for self-suspension:
+        gMaxsstype = 0.5  # maximal total self-suspension length
+        gMinsstype = 0.0  # minimal total self-suspension length
+
+        gSSofftypes = 0  # number of segments does not matter
+
+        Ncol = 3  # number of columns in Legend
+
+        RI_depth = 5  # depth for RI schedulability test
+        RI_max_a = 10  # maximal a for RI schedulability test
+
+        num_processors = 100  # number of processors for the evaluation
+
+    # Further plotting preferences.
+    gPrefixdata = "effsstsPlot/Data"  # path to store data
+
+    # Modify the number of processes
+    if args["proc"] is not None and args["proc"] > 0:
+        num_processors = args["proc"]
+
+    # Set the scheme flag.
+    scheme_flag = args["scheme"]
+
+    ###
+    # Choose schedulability tests to be run + assign corresponding gSchemes and plotallname:
+    ###
+
+    plotallname = ''
+    if scheme_flag == '1':
+        # 1 DM Evaluation.
+        gSchemes = ['EL DM', 'UniFramework', 'SuspJit', 'SuspBlock', 'SuspObl']
+        plotallname = '1_dm'
+    elif scheme_flag == '2':
+        # 2 EDF Evaluation.
+        gSchemes = ['EL EDF', 'Our EMSoft', 'Liu and Anderson',
+                    'Susp as Comp']
+        plotallname = '2_edf'
+    elif scheme_flag == '3':
+        # 3 EQDF Evaluation.
+        gSchemes = ['EL EQDF lam=-1', 'EL EQDF lam=0', 'EL EQDF lam=+1',
+                    'EL EQDF any lam in [-10,10]']
+        Ncol = 2
+        plotallname = '3_eqdf'
+    elif scheme_flag == '4':
+        # 4 SAEDF Evaluation.
+        gSchemes = ['EL SAEDF lam=-1', 'EL SAEDF lam=0', 'EL SAEDF lam=+1',
+                    'EL SAEDF any lam in [-10,10]']
+        Ncol = 2
+        plotallname = '4_saedf'
+    elif scheme_flag == '5a':
+        # 5a Arb deadline DM Evaluation.
+        gSchemes = ['EL-fix DM D1.0', 'EL-fix DM D1.1', 'EL-fix DM D1.2',
+                    'EL-fix DM D1.5']
+        Ncol = 2
+        plotallname = '5a_arb_dl_dm'
+    elif scheme_flag == '5b':
+        # 5b Arb deadline DM Evaluation.
+        gSchemes = ['EL-var DM D1.0', 'EL-var DM D1.1', 'EL-var DM D1.2',
+                    'EL-var DM D1.5']
+        Ncol = 2
+        plotallname = '5b_arb_dl_dm'
+    elif scheme_flag == '6a':
+        # 6a Arb deadline EDF Evaluation.
+        gSchemes = ['EL-fix EDF D1.0', 'EL-fix EDF D1.1', 'EL-fix EDF D1.2',
+                    'EL-fix EDF D1.5']
+        Ncol = 2
+        plotallname = '6a_arb_dl_edf'
+    elif scheme_flag == '6b':
+        # 6b Arb deadline EDF Evaluation.
+        gSchemes = ['EL-var EDF D1.0', 'EL-var EDF D1.1', 'EL-var EDF D1.2',
+                    'EL-var EDF D1.5']
+        Ncol = 2
+        plotallname = '6b_arb_dl_edf'
+    else:
+        print('No valid argument. Please choose from:', scheme_flag_options)
+        quit()
 
     ###
     # Create Task sets
     ###
-    random.seed(331)  # same task sets for each plot
+    random.seed(331)  # Get same task sets for each plot.
 
     tasksets_difutil = []  # task set differentiated by utilization
 
@@ -394,9 +398,9 @@ if __name__ == '__main__':
                 y[u] = 0
                 continue
 
-            with Pool(num_processors) as p:
-                fails = p.starmap(check, zip(repeat(ischeme), tasksets))
-            numfail = sum(fails)  # number of fails
+            with Pool(num_processors) as p:  # Use several processes and apply the check function.
+                fails = p.starmap(check, zip(repeat(ischeme), tasksets, repeat(RI_depth), repeat(RI_max_a)))
+            numfail = sum(fails)  # total number of fails
 
             acceptanceRatio = 1 - (numfail / len(tasksets))
             print("acceptanceRatio:", acceptanceRatio)
@@ -404,12 +408,12 @@ if __name__ == '__main__':
             # if acceptanceRatio == 0:
             #     ifskip = True
 
+        # Store results
         plotPath = (gPrefixdata + '/' + str(gMinsstype) + '-' + str(gMaxsstype)
                     + '/' + str(gSSofftypes) + '/')
         plotfile = (gPrefixdata + '/' + str(gMinsstype) + '-' + str(gMaxsstype)
                     + '/' + str(gSSofftypes) + '/' + ischeme + str(gTasksinBkt))
 
-        # Store results
         if not os.path.exists(plotPath):
             os.makedirs(plotPath)
         np.save(plotfile, np.array([x, y]))
@@ -417,6 +421,5 @@ if __name__ == '__main__':
     ###
     # Plot.
     ###
-
     plot_results(gPrefixdata, gSchemes, gMinsstype, gMaxsstype, gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol,
                  plotallname)
