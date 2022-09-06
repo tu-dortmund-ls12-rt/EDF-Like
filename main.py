@@ -394,11 +394,9 @@ if __name__ == '__main__':
                 y[u] = 0
                 continue
 
-            numfail = 0  # number of fails
-
             with Pool(num_processors) as p:
                 fails = p.starmap(check, zip(repeat(ischeme), tasksets))
-            numfail = sum(fails)
+            numfail = sum(fails)  # number of fails
 
             acceptanceRatio = 1 - (numfail / len(tasksets))
             print("acceptanceRatio:", acceptanceRatio)
