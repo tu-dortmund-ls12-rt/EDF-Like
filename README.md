@@ -100,10 +100,10 @@ chmod 777 auto.sh
 - To reproduce Figure 6 and 7 in the paper, ```auto.sh``` should be executed.
 - The plotted figures can be found in the folder data/3plots:
 
-Paper figure | Plot in data/3plots
----|---
-Fig. 6 | 'plot2_num_servers_combined_util_servers=[0.1, 0.4].pdf'
-Fig. 7 | 'plot3_num_servers=[10, 100]_util_servers_combined.pdf'
+| Paper figure | Plot in data/3plots                                      |
+|--------------|----------------------------------------------------------|
+| Fig. 6       | 'plot2_num_servers_combined_util_servers=[0.1, 0.4].pdf' |
+| Fig. 7       | 'plot3_num_servers=[10, 100]_util_servers_combined.pdf'  |
 
 As a reference, we utilize a machine running Archlinux 5.17.3-arch1-1 x86_64 GNU/Linux,with i7-10610U CPU and 16 GB main
 memory. It takes about 170 seconds with this machine to obtain these two figures, when set ```num_processors = 5```
@@ -136,4 +136,5 @@ This work has been supported by European Research Council (ERC) Consolidator Awa
 
 ### License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details. # TODO: add license
+file
