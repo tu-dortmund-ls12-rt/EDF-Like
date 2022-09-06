@@ -1,4 +1,3 @@
-from __future__ import division
 from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF, UniFramework, FP_Analyses
 from effsstsPlot import effsstsPlot
 
@@ -10,7 +9,6 @@ import random
 
 from multiprocessing import Pool
 from itertools import repeat
-
 
 ###
 # Global preferences.
@@ -122,7 +120,6 @@ else:
     print('No valid argument. Please choose from:', scheme_flag_options)
     quit()
 
-
 # Plotting preferences.
 gPrefixdata = "effsstsPlot/Data"  # path to store data
 
@@ -137,6 +134,7 @@ def plot_results(
         gPrefixdata, True, gSchemes, gMinsstype, gMaxsstype,
         gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol=Ncol,
         plotsingle=False, plotallname=plotallname)
+
 
 def check(ischeme, tasks):
     """Check function to apply multiprocessing."""
@@ -338,6 +336,8 @@ def check(ischeme, tasks):
         assert ischeme, 'not vaild ischeme'
 
     return numfail
+
+
 # end check function
 
 
@@ -371,9 +371,9 @@ if __name__ == '__main__':
     # Schedulability tests
     ###
     for ischeme in gSchemes:
-        x = np.arange(gUStart, gUEnd+1, gUStep)
+        x = np.arange(gUStart, gUEnd + 1, gUStep)
         print(x)
-        y = np.zeros(int((gUEnd-gUStart) / gUStep) + 1)
+        y = np.zeros(int((gUEnd - gUStart) / gUStep) + 1)
         print(y)
 
         ifskip = False  # skip flag when 0 is reached

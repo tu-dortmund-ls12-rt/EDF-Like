@@ -51,6 +51,10 @@ In case any dependent packages are missing, please install them accordingly.
 
 TODO: CONTINUE HERE =====
 
+TODO:
+
+- troubleshooting: maximum number of processes may be limited by the operating system.
+
 ## File Structure
 
     .

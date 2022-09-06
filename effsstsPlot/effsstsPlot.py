@@ -45,36 +45,36 @@ def pickColor(ischeme):  # TODO adjust
     elif ischeme == 'EL SAEDF any lam in [-10,10]':
         color = '#000000'
     elif ischeme in [  # --- 5 Evaluation.
-            'EL-fix DM D1.0', 'EL-var DM D1.0',
-            ]:
+        'EL-fix DM D1.0', 'EL-var DM D1.0',
+    ]:
         color = '#99ff99'
     elif ischeme in [
-            'EL-fix DM D1.1', 'EL-var DM D1.1',
-            ]:
+        'EL-fix DM D1.1', 'EL-var DM D1.1',
+    ]:
         color = '#00e600'
     elif ischeme in [
-            'EL-fix DM D1.2', 'EL-var DM D1.2',
-            ]:
+        'EL-fix DM D1.2', 'EL-var DM D1.2',
+    ]:
         color = '#008000'
     elif ischeme in [
-            'EL-fix DM D1.5', 'EL-var DM D1.5',
-            ]:
+        'EL-fix DM D1.5', 'EL-var DM D1.5',
+    ]:
         color = '#000000'
     elif ischeme in [  # --- 6 Evaluation.
-            'EL-fix EDF D1.0', 'EL-var EDF D1.0'
-            ]:
+        'EL-fix EDF D1.0', 'EL-var EDF D1.0'
+    ]:
         color = '#ff9980'
     elif ischeme in [
-            'EL-fix EDF D1.1', 'EL-var EDF D1.1'
-            ]:
+        'EL-fix EDF D1.1', 'EL-var EDF D1.1'
+    ]:
         color = '#ff3300'
     elif ischeme in [
-            'EL-fix EDF D1.2', 'EL-var EDF D1.2'
-            ]:
+        'EL-fix EDF D1.2', 'EL-var EDF D1.2'
+    ]:
         color = '#b32400'
     elif ischeme in [
-            'EL-fix EDF D1.5', 'EL-var EDF D1.5'
-            ]:
+        'EL-fix EDF D1.5', 'EL-var EDF D1.5'
+    ]:
         color = '#000000'
     else:  # --- Other: Randomly.
         color = "#%06x" % random.randint(0, 0xFFFFFF)
@@ -84,45 +84,45 @@ def pickColor(ischeme):  # TODO adjust
 def pickMarker(ischeme):  # TODO adjust
     marker = ''
     if ischeme in [
-            'EL DM',
-            'EL EDF',
-            'EL EQDF any lam in [-10,10]',
-            'EL SAEDF any lam in [-10,10]',
-            'EL-fix DM D1.5', 'EL-var DM D1.5',
-            'EL-fix EDF D1.5', 'EL-var EDF D1.5'
-            ]:
+        'EL DM',
+        'EL EDF',
+        'EL EQDF any lam in [-10,10]',
+        'EL SAEDF any lam in [-10,10]',
+        'EL-fix DM D1.5', 'EL-var DM D1.5',
+        'EL-fix EDF D1.5', 'EL-var EDF D1.5'
+    ]:
         marker = 'o'
     elif ischeme in [
-            'UniFramework',
-            'Our EMSoft',
-            'EL EQDF lam=0',
-            'EL SAEDF lam=0',
-            'EL-fix DM D1.1', 'EL-var DM D1.1',
-            'EL-fix EDF D1.1', 'EL-var EDF D1.1'
-            ]:
+        'UniFramework',
+        'Our EMSoft',
+        'EL EQDF lam=0',
+        'EL SAEDF lam=0',
+        'EL-fix DM D1.1', 'EL-var DM D1.1',
+        'EL-fix EDF D1.1', 'EL-var EDF D1.1'
+    ]:
         marker = 'x'
     elif ischeme in [
-            'SuspJit',
-            'Dong and Liu',
-            'EL EQDF lam=+1',
-            'EL SAEDF lam=+1',
-            'EL-fix DM D1.2', 'EL-var DM D1.2',
-            'EL-fix EDF D1.2', 'EL-var EDF D1.2'
-            ]:
+        'SuspJit',
+        'Dong and Liu',
+        'EL EQDF lam=+1',
+        'EL SAEDF lam=+1',
+        'EL-fix DM D1.2', 'EL-var DM D1.2',
+        'EL-fix EDF D1.2', 'EL-var EDF D1.2'
+    ]:
         marker = '>'
     elif ischeme in [
-            'SuspBlock',
-            'Liu and Anderson',
-            'EL EQDF lam=-1',
-            'EL SAEDF lam=-1',
-            'EL-fix DM D1.0', 'EL-var DM D1.0',
-            'EL-fix EDF D1.0', 'EL-var EDF D1.0'
-            ]:
+        'SuspBlock',
+        'Liu and Anderson',
+        'EL EQDF lam=-1',
+        'EL SAEDF lam=-1',
+        'EL-fix DM D1.0', 'EL-var DM D1.0',
+        'EL-fix EDF D1.0', 'EL-var EDF D1.0'
+    ]:
         marker = '<'
     elif ischeme in [
-            'SuspObl',
-            'Susp as Comp'
-            ]:
+        'SuspObl',
+        'Susp as Comp'
+    ]:
         marker = '|'
     else:
         randommarker = ['o', 'v', '^', '<', '>', '1', '2', '3', '4', '8', 's',
@@ -169,31 +169,32 @@ def pickName(ischeme):  # TODO adjust
 
 def pickLineStyle(ischeme):
     if ischeme in [
-            'SuspJit',
-            'SuspBlock',
-            'Dong and Liu',
-            'Liu and Anderson',
-            'EL EQDF lam=-1',
-            'EL EQDF lam=+1',
-            'EL SAEDF lam=-1',
-            'EL SAEDF lam=+1',
-            'EL-fix DM D1.0', 'EL-var DM D1.0',
-            'EL-fix EDF D1.0', 'EL-var EDF D1.0',
-            'EL-fix DM D1.2', 'EL-var DM D1.2',
-            'EL-fix EDF D1.2', 'EL-var EDF D1.2'
-            ]:
+        'SuspJit',
+        'SuspBlock',
+        'Dong and Liu',
+        'Liu and Anderson',
+        'EL EQDF lam=-1',
+        'EL EQDF lam=+1',
+        'EL SAEDF lam=-1',
+        'EL SAEDF lam=+1',
+        'EL-fix DM D1.0', 'EL-var DM D1.0',
+        'EL-fix EDF D1.0', 'EL-var EDF D1.0',
+        'EL-fix DM D1.2', 'EL-var DM D1.2',
+        'EL-fix EDF D1.2', 'EL-var EDF D1.2'
+    ]:
         linestyle = '--'
     elif ischeme in [
-            'SuspObl',
-            'Susp as Comp',
-            ]:
+        'SuspObl',
+        'Susp as Comp',
+    ]:
         linestyle = ':'
     else:
         linestyle = '-'
     return linestyle
 
 
-def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks,Ncol=3, plotallname=''):
+def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=3,
+                plotallname=''):
     """
     prints all plots
     """
@@ -223,16 +224,17 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
 
     i = 1
     for ischeme in schemes:
-        ifile = prefix+"/"+str(minsstype)+"-"+str(maxsstype)+"/"+str(ssofftypes)+"/"+ischeme+ str(numberoftasks) +".npy"
+        ifile = prefix + "/" + str(minsstype) + "-" + str(maxsstype) + "/" + str(ssofftypes) + "/" + ischeme + str(
+            numberoftasks) + ".npy"
         data = np.load(ifile)
         x = data[0][0::1]
         y = data[1][0::1]
-        us = int(math.ceil(ustart/ustep))
-        ue = int(math.floor(uend/ustep))
+        us = int(math.ceil(ustart / ustep))
+        ue = int(math.floor(uend / ustep))
         print(x)
         print(y)
-        x=x[us:ue+1]
-        y=y[us:ue+1]
+        x = x[us:ue + 1]
+        y = y[us:ue + 1]
         ax.plot(x, y,
                 pickLineStyle(ischeme),
                 color=pickColor(ischeme),
@@ -257,35 +259,43 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
                 prop={'size': 18})
 
     # ax.set_title('No. of tasks: '+str(numberoftasks)+', Self-suspension length: ' +
-                    # str(minsstype)+"-"+str(maxsstype), size=10, y=0.99, fontsize=20)
+    # str(minsstype)+"-"+str(maxsstype), size=10, y=0.99, fontsize=20)
     ax.grid()
     i += 1
-    #fig.savefig(prefix+"/"+isstype+"/"+issofftypes +
-        #           "/"+ischeme+".pdf", bbox_inches='tight')
+    # fig.savefig(prefix+"/"+isstype+"/"+issofftypes +
+    #           "/"+ischeme+".pdf", bbox_inches='tight')
 
-    #plt.show()
+    # plt.show()
     if plotall:
         if plotallname != '':
             fig.savefig(prefix + '/' + plotallname + '.pdf', bbox_inches='tight')
             print('[DONE]', '/' + prefix + '/' + plotallname + '.pdf')
         else:
-            fig.savefig(prefix + '/EFFSSTS[' + str(ssofftypes) + '][' + str(minsstype)+"-"+str(maxsstype) + '][' + str(numberoftasks) + '].pdf', bbox_inches='tight')
-            print('[DONE]', '/' + prefix + '/EFFSSTS[' + str(ssofftypes) + '][' + str(minsstype)+"-"+str(maxsstype) + '][' + str(numberoftasks) + '].pdf')
+            fig.savefig(
+                prefix + '/EFFSSTS[' + str(ssofftypes) + '][' + str(minsstype) + "-" + str(maxsstype) + '][' + str(
+                    numberoftasks) + '].pdf', bbox_inches='tight')
+            print('[DONE]', '/' + prefix + '/EFFSSTS[' + str(ssofftypes) + '][' + str(minsstype) + "-" + str(
+                maxsstype) + '][' + str(numberoftasks) + '].pdf')
     else:
-        fig.savefig(prefix + '/' + schemes[0] + '[' + str(ssofftypes) + '][' + str(minsstype)+"-"+str(maxsstype) + '][' + str(numberoftasks) + '].pdf', bbox_inches='tight')
-        print('[DONE]', '/' + prefix + '/' + schemes[0] + '[' +  str(ssofftypes) + '][' + str(minsstype)+"-"+str(maxsstype) + '][' + str(numberoftasks) + '].pdf')
-    #sys.exit()
+        fig.savefig(prefix + '/' + schemes[0] + '[' + str(ssofftypes) + '][' + str(minsstype) + "-" + str(
+            maxsstype) + '][' + str(numberoftasks) + '].pdf', bbox_inches='tight')
+        print('[DONE]', '/' + prefix + '/' + schemes[0] + '[' + str(ssofftypes) + '][' + str(minsstype) + "-" + str(
+            maxsstype) + '][' + str(numberoftasks) + '].pdf')
+    # sys.exit()
 
 
-def effsstsPlotAll(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=3, plotsingle=True, plotallname=''):
+def effsstsPlotAll(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks,
+                   Ncol=3, plotsingle=True, plotallname=''):
     print('-------------------------------------------------------')
-    print(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep,numberoftasks)
+    print(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks)
     print('-------------------------------------------------------')
     if plotsingle:
         for scheme in schemes:
-            effsstsPlot(prefix, False, [scheme], minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=Ncol)
+            effsstsPlot(prefix, False, [scheme], minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks,
+                        Ncol=Ncol)
     if (plotall):
-        effsstsPlot(prefix, True, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=Ncol, plotallname=plotallname)
+        effsstsPlot(prefix, True, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks,
+                    Ncol=Ncol, plotallname=plotallname)
 
 
 def effsstsPlotRuntime(
@@ -309,8 +319,8 @@ def effsstsPlotRuntime(
     ax = fig.add_subplot(111)
     fig.subplots_adjust(top=0.9, left=0.1, right=0.95, hspace=0.3)
 
-    ax.set_xlabel('#Tasks', size=15, fontsize=23)
-    ax.set_ylabel(ylabel, size=15, fontsize=23)
+    ax.set_xlabel('#Tasks', fontsize=23)
+    ax.set_ylabel(ylabel, fontsize=23)
     ax.spines['top'].set_color('black')
     ax.spines['bottom'].set_color('black')
     ax.spines['left'].set_color('black')
@@ -323,7 +333,7 @@ def effsstsPlotRuntime(
         x = []
         y = []
         for numberoftasks in range(num_tasks_start, num_tasks_end, num_tasks_step):
-            ifile = prefix+"/" + ischeme + str(numberoftasks) + '_runtime' + ".npy"
+            ifile = prefix + "/Runtime/" + ischeme + str(numberoftasks) + '_runtime' + ".npy"
             data = np.load(ifile)
             x.append(numberoftasks)
             if method == 'avg':
@@ -364,10 +374,11 @@ def effsstsPlotRuntime(
 
     fig.savefig(prefix + '/' + plotallname + '.pdf', bbox_inches='tight')
 
+
 if __name__ == '__main__':
     args = sys.argv
     print(args)
     testSchemes = ['EDA', 'NC', 'SCEDF', 'PASS-OPA']
-    testSelfSuspendingType= ['S','M','L']
+    testSelfSuspendingType = ['S', 'M', 'L']
     testNumberofSegments = [2]
     effsstsPlotAll(args[1], True, testSchemes, testSelfSuspendingType, testNumberofSegments, 1, 99, 5, 10)

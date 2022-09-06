@@ -1,5 +1,4 @@
-from __future__ import division
-from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF, Audsley, UniFramework, FP_Analyses
+from schedTest import tgPath, RI, RTEDF, UDLEDF, SCEDF, WLAEDF, UniFramework, FP_Analyses
 from effsstsPlot import effsstsPlot
 
 import numpy as np
@@ -13,15 +12,46 @@ import time
 from multiprocessing import Pool
 from itertools import repeat
 
-
 ###
 # Global preferences.
 ###
 
-gTotBucket = 100  # total number of task sets per utilization
-gTasksinBkt = 10  # tasks per set
+# # == Configuration from the experiments == #
+#
+# gTotBucket = 100  # total number of task sets per utilization
+#
+# # number of tasks
+# num_tasks_start = 10
+# num_tasks_end = 210
+# num_tasks_step = 10
+#
+# gUStep = 10  # utilization step
+# gUStart = 0  # utilization start
+# gUEnd = 100  # utilization end
+#
+# # Share from period - wcet for self-suspension:
+# gMaxsstype = 0.5  # maximal total self-suspension length
+# gMinsstype = 0.0  # minimal total self-suspension length
+#
+# gSSofftypes = 0  # number of segments does not matter
+#
+# Ncol = 3  # number of columns in Legend
+#
+# RI_depth = 5  # depth for EL schedulability test
+# RI_max_a = 10  # maximal a for EL schedulability test
+#
+# num_processors = 100  # number of processors for the evaluation
 
-gUStep = 10  # utilization step
+# == Simplified configurations for quick check == #
+
+gTotBucket = 10  # total number of task sets per utilization
+
+# number of tasks
+num_tasks_start = 10
+num_tasks_end = 210
+num_tasks_step = 95
+
+gUStep = 50  # utilization step
 gUStart = 0  # utilization start
 gUEnd = 100  # utilization end
 
@@ -33,17 +63,18 @@ gSSofftypes = 0  # number of segments does not matter
 
 Ncol = 3  # number of columns in Legend
 
-RI_depth = 5  # depth for EL schedulability test
-RI_max_a = 10  # maximal a for EL schedulability test
+RI_depth = 2  # depth for EL schedulability test
+RI_max_a = 2  # maximal a for EL schedulability test
+
+num_processors = 6  # number of processors for the evaluation
 
 plotallname = ''
-
 
 # Plotting preferences.
 gPlotdata = True  # flag to plot data
 gPlotall = True
 gPlotsingle = False
-gPrefixdata = "effsstsPlot/Data/Runtime"  # path to store data
+gPrefixdata = "effsstsPlot/Data"  # path to store data
 
 
 # Help function to plot results.
@@ -102,6 +133,7 @@ def create_tasksets(number_tasks):
 
     return tasksets_difutil
 
+
 # breakpoint()
 
 ###
@@ -119,9 +151,9 @@ def create_tasksets(number_tasks):
 # # ---
 
 def runtime_eval(ischeme, tasksets_difutil, num_processors):
-    x = np.arange(gUStart, gUEnd+1, gUStep)
+    x = np.arange(gUStart, gUEnd + 1, gUStep)
     print(x)
-    y = np.zeros(int((gUEnd-gUStart) / gUStep) + 1)
+    y = np.zeros(int((gUEnd - gUStart) / gUStep) + 1)
     print(y)
 
     runtimes = []  # runtimes
@@ -362,16 +394,16 @@ def timing(ischeme, tasks):
     return time.time() - start
 
 
-
 def store_results(ischeme, number_tasks, runtimes):
     # breakpoint()
     plotPath = (gPrefixdata)
-    plotfile = (gPrefixdata + '/' + ischeme + str(number_tasks) + '_runtime')
+    plotfile = (gPrefixdata + '/Runtime/' + ischeme + str(number_tasks) + '_runtime')
 
     # Store results
     if not os.path.exists(plotPath):
         os.makedirs(plotPath)
     np.save(plotfile, runtimes)
+
 
 # if gPlotdata:
 #     # Plot data after Evaluation results.
@@ -404,24 +436,20 @@ if __name__ == '__main__':
         print('No valid argument. Please choose from:', scheme_flag_options)
         quit()
 
-    # settings
-    num_tasks_start = 10
-    num_tasks_end = 210
-    num_tasks_step = 10
-
-    # # runtime tests
-    # for number_tasks in range(num_tasks_start, num_tasks_end, num_tasks_step):
-    #     tasksets_difutil = create_tasksets(number_tasks)
-    #     for ischeme in gSchemes:
-    #         runtimes = runtime_eval(ischeme, tasksets_difutil, 100)
-    #         store_results(ischeme, number_tasks, runtimes)
-
+    # runtime tests
+    for number_tasks in range(num_tasks_start, num_tasks_end, num_tasks_step):
+        tasksets_difutil = create_tasksets(number_tasks)
+        for ischeme in gSchemes:
+            runtimes = runtime_eval(ischeme, tasksets_difutil, num_processors)
+            store_results(ischeme, number_tasks, runtimes)
 
     # plot
     effsstsPlot.effsstsPlotRuntime(
-            gPrefixdata, gSchemes, num_tasks_start, num_tasks_end, num_tasks_step,
-            Ncol=3, plotallname='runtime_eval_' + str(scheme_flag) + '_avg', method='avg', ylabel='Average Runtime (s)', show_legend=False)
+        gPrefixdata, gSchemes, num_tasks_start, num_tasks_end, num_tasks_step,
+        Ncol=3, plotallname='runtime_eval_' + str(scheme_flag) + '_avg', method='avg', ylabel='Average Runtime (s)',
+        show_legend=False)
 
     effsstsPlot.effsstsPlotRuntime(
-            gPrefixdata, gSchemes, num_tasks_start, num_tasks_end, num_tasks_step,
-            Ncol=3, plotallname='runtime_eval_' + str(scheme_flag) + '_max', method='max', ylabel='Maximal Runtime (s)', show_legend=False)
+        gPrefixdata, gSchemes, num_tasks_start, num_tasks_end, num_tasks_step,
+        Ncol=3, plotallname='runtime_eval_' + str(scheme_flag) + '_max', method='max', ylabel='Maximal Runtime (s)',
+        show_legend=False)
