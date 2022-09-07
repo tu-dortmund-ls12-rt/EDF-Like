@@ -1,3 +1,8 @@
+TODO:
+
+- troubleshooting: maximum number of processes may be limited by the operating system.
+- copy to private repo and remove branch "tuning"
+
 # EDF-Like Scheduling Schedulability Evaluation
 
 This repository is used to reproduce the evaluation from the paper
@@ -29,19 +34,11 @@ machine.
 Moreover, the following Python packages are required: TODO: Update
 
 ```
-getopt
-math
-matplotlib
-multiprocessing
-numpy
-os
-pickle
-random
-statistics
-sys
+matplotlib~=3.5.3
+numpy~=1.23.2
 ```
 
-Assuming that Python 3.10 is installed in the targeted machine, to install the required packages: TODO: Update
+Assuming that Python 3.10 is installed in the targeted machine, to install the required packages:
 
 ```
 python3.10 -m pip install matplotlib numpy
@@ -51,59 +48,72 @@ In case any dependent packages are missing, please install them accordingly.
 
 TODO: CONTINUE HERE =====
 
-TODO:
-
-- troubleshooting: maximum number of processes may be limited by the operating system.
-
 ## File Structure
 
     .
-    ├── res                     # Resource packages
-    │   ├── benchmark.py        # Server and task creation
-    │   ├── our_analysis.py     # Our analysis
-    │   ├── plot.py             # Plotting functionality
-    │   └── rtc_cb.py           # RTC-based analysis	
-    ├── data                    # Evaluation data
-    │   ├── 1setup              # Server and task specification
-    │   ├── 2results            # Evaluation results
-    │   └── 3plots              # Plots to present the results
-    ├── main.py                 # Main function of the evaluation
-    ├── auto.sh                 # bash-script to automize the evaluation
-    └── README.md
-
-Note that the source code of the case study part (Section 6.2) is contributed by a close-source project, so it is
-excluded from this repository. Please contact the company, i.e., [EMVICORE GmbH](https://emvicore.com/de/) for further
-information.
+    ├── README.md             
+    ├── auto_full.sh          # bash-script to automize the full evaluation
+    ├── auto_quick.sh         # bash-script to run evaluation with faster configuration (for testing)
+    ├── effsstsPlot           # Plotting
+    │ ├── __init__.py
+    │ ├── Data                # Evaluation data and plots
+    │ └── effsstsPlot.py      # Plot functionality
+    ├── main.py               # Main function of the evaluation
+    ├── runtime.py            # Main function to evaluate the runtime
+    └── schedTest             # Schedulability tests and benchmark
+      ├── __init__.py
+      ├── EL.py               # Our analysis for EDF-Like scheduling
+      ├── FP_Analyses.py
+      ├── RTEDF.py
+      ├── SCEDF.py
+      ├── UDLEDF.py
+      ├── UUniFast.py
+      ├── UniFramework.py
+      ├── WLAEDF.py
+      ├── functions.py
+      └── tgPath.py           # Benchmark
 
 ### Deployment
 
 The following steps explain how to deploy this framework on a common PC:
 
 First, clone the git repository or download
-the [zip file](https://github.com/tu-dortmund-ls12-rt/unikernel-based_deferrable_server_analysis/archive/refs/heads/main.zip):
+the [zip file](https://github.com/tu-dortmund-ls12-rt/EDF-Like/archive/refs/heads/main.zip):
 
 ```
-git clone https://github.com/tu-dortmund-ls12-rt/unikernel-based_deferrable_server_analysis.git
+git clone https://github.com/tu-dortmund-ls12-rt/EDF-Like.git
 ```
 
-Move into the extracted/cloned folder, change the permissions of the script to be executable, and execute auto.sh
-natively:
+Move into the extracted/cloned folder, change the permissions of the script to be executable:
 
 ```
-cd unikernel-based_deferrable_server_analysis
-chmod 777 auto.sh
-./auto.sh
+cd EDF-Like
+chmod 777 auto_full.sh
+chmod 777 auto_quick.sh
 ```
 
 ## How to run the experiments
 
-- To reproduce Figure 6 and 7 in the paper, ```auto.sh``` should be executed.
-- The plotted figures can be found in the folder data/3plots:
+- To test if the evaluation runs without errors, ```auto_quick.sh``` can be executed (run ```./auto_quick.sh```)
+- To reproduce the evaluation from the RTSS paper, ```auto_full.sh``` can be executed (run ```./auto_full.sh```)
+- The plotted figures can be found in the folder ```effsstsPlot/Data```:
 
-| Paper figure | Plot in data/3plots                                      |
-|--------------|----------------------------------------------------------|
-| Fig. 6       | 'plot2_num_servers_combined_util_servers=[0.1, 0.4].pdf' |
-| Fig. 7       | 'plot3_num_servers=[10, 100]_util_servers_combined.pdf'  |
+| Paper figure    | Plot in effsstsPlot/Data |
+|-----------------|--------------------------|
+| Fig. 5(a)       | 1_dm.pdf                 |
+| Fig. 5(b)       | 2_edf.pdf                |
+| Fig. 6(a)       | 3_eqdf.pdf               |
+| Fig. 6(b)       | 4_saedf.pdf              |
+| Fig. 7(a)       | 5a_arb_dl_dm.pdf         |
+| Fig. 7(b)       | 5b_arb_dl_dm.pdf         |
+| Fig. 8(a)       | 6a_arb_dl_edf.pdf        |
+| Fig. 8(b)       | 6b_arb_dl_edf.pdf        |
+| Fig. 9(a)       |                          |
+| Fig. 9(b)       |                          |
+| (not presented) | runtime_eval_1_avg.pdf   |
+| (not presented) | runtime_eval_1_avg.pdf   |
+
+TODO: CONTINUE ===================================================================
 
 As a reference, we utilize a machine running Archlinux 5.17.3-arch1-1 x86_64 GNU/Linux,with i7-10610U CPU and 16 GB main
 memory. It takes about 170 seconds with this machine to obtain these two figures, when set ```num_processors = 5```
