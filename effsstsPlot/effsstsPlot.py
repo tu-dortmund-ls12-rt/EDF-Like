@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mainly taken from SSSEvaluation:
+"""Most functions taken from or inspired by SSSEvaluation:
 https://github.com/tu-dortmund-ls12-rt/SSSEvaluation/blob/master/effsstsPlot/effsstsPlot.py"""
 import sys
 import numpy as np
@@ -8,8 +8,12 @@ import random
 import math
 
 
-def pickColor(ischeme):  # TODO adjust
-    color = ''
+###
+# Help functions.
+###
+def pickColor(ischeme):
+    """Pick color for different schemes."""
+    color = ''  # color
     if ischeme == 'EL DM':  # --- 1 DM Evaluation.
         color = '#000000'
     elif ischeme == 'UniFramework':
@@ -84,7 +88,8 @@ def pickColor(ischeme):  # TODO adjust
 
 
 def pickMarker(ischeme):  # TODO adjust
-    marker = ''
+    """Pick marker for different schemes."""
+    marker = ''  # marker
     if ischeme in [
         'EL DM',
         'EL EDF',
@@ -129,12 +134,12 @@ def pickMarker(ischeme):  # TODO adjust
     else:
         randommarker = ['o', 'v', '^', '<', '>', '1', '2', '3', '4', '8', 's',
                         'p', 'P', '*', '+', 'x', 'X', 'D', 'd']
-        # marker = '<'
         marker = random.choice(randommarker)
     return marker
 
 
-def pickName(ischeme):  # TODO adjust
+def pickName(ischeme):
+    """Pick name for different schemes."""
     name = ''
     if ischeme == 'UniFramework':  # --- 1 DM Evaluation.
         name = 'CNH16'
@@ -170,6 +175,7 @@ def pickName(ischeme):  # TODO adjust
 
 
 def pickLineStyle(ischeme):
+    """Pick line style for different schemes."""
     if ischeme in [
         'SuspJit',
         'SuspBlock',
@@ -195,6 +201,9 @@ def pickLineStyle(ischeme):
     return linestyle
 
 
+###
+# Main functions.
+###
 def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=3,
                 plotallname=''):
     """ Make a plot of the results obtained by schemes."""
