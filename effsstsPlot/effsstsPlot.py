@@ -317,8 +317,8 @@ def effsstsPlotRuntime(
     ax = fig.add_subplot(111)
     fig.subplots_adjust(top=0.9, left=0.1, right=0.95, hspace=0.3)
 
-    ax.set_xlabel('#Tasks', size=15, fontsize=23)
-    ax.set_ylabel(ylabel, size=15, fontsize=23)
+    ax.set_xlabel('#Tasks', fontsize=23)
+    ax.set_ylabel(ylabel, fontsize=23)
     ax.spines['top'].set_color('black')
     ax.spines['bottom'].set_color('black')
     ax.spines['left'].set_color('black')
@@ -385,8 +385,8 @@ def plot_comparison(schemes, results_plot, plotpath, plotname='', Ncol=3):
     ax = fig.add_subplot(111)
     fig.subplots_adjust(top=0.8, left=0.2, right=0.95, bottom=0.2, hspace=0.3)
 
-    ax.set_xlabel('Utilization (%)', size=15, fontsize=23)
-    ax.set_ylabel('Acceptance Ratio', size=15, fontsize=23)
+    ax.set_xlabel('Utilization (%)', fontsize=23)
+    ax.set_ylabel('Acceptance Ratio', fontsize=23)
     ax.spines['top'].set_color('black')
     ax.spines['bottom'].set_color('black')
     ax.spines['left'].set_color('black')

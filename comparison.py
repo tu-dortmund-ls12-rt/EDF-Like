@@ -1,10 +1,11 @@
+from argparse import ArgumentParser
+
 from schedTest import GUC21
 from schedTest import EL
 from schedTest import tgPath as create
 
 import numpy as np
 import os
-import sys
 import random
 import itertools
 from itertools import repeat
@@ -87,10 +88,10 @@ def _test_scheme(gScheme, taskset):
 
     elif gScheme == 'EL-fixed':
         EL.set_prio(taskset, prio_policy=2)
-        return EL.RI_fixed(taskset)
+        return EL.EL_fixed(taskset)
     elif gScheme == 'EL-var':
         EL.set_prio(taskset, prio_policy=2)
-        return EL.RI_var(taskset, max_a=10)
+        return EL.EL_var(taskset, max_a=10)
 
     else:
         return False
@@ -116,13 +117,16 @@ def _constrained_tasks(taskset):
 
 
 if __name__ == '__main__':
-
-    # Input check
-    if len(sys.argv) < 3:
-        print('Please provide additional arguments.')
-        print('1st:  0:sched test + plot, 1: plot only')
-        print('2nd:  argument to choose schedulability test')
-        quit()
+    ###
+    # Options
+    ###
+    parser = ArgumentParser()
+    parser.add_argument("-q", "--quick", dest="quick", action="store_true", default=False,
+                        help="Run only a small configuration to test that the program runs. Otherwise, the full evaluation is performed.")
+    parser.add_argument("-p", "--processes", dest="proc", type=int,
+                        help="Specify the number of concurrent processes.")
+    parser.add_argument("scheme", help="Choose a scheme flag option from: [401. 402]")
+    args = vars(parser.parse_args())
 
     # Settings
     gTotBucket = 200  # total number of task sets per utilization
@@ -149,13 +153,18 @@ if __name__ == '__main__':
 
     #####
     # === Try-out settings: ===
-    gTotBucket = 100
-    gTasksinBkt = 20
+    gTotBucket = 10
+    gTasksinBkt = 10
     gMultiproc = 0
+
+    gUStart = 0  # utilization start
+    gUEnd = 100  # utilization end
+    gUStep = 50  # utilization step
+    gMultiproc = 6  # number of concurrent threads
     #####
 
     # Choose schedulability tests
-    scheme_flag = sys.argv[2]
+    scheme_flag = args["scheme"]
 
     # ==Show that Heuristic is useful==
     ##### Comparison #####
