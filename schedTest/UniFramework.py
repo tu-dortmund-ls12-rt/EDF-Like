@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+"""Taken from SSSEvaluation:
+https://github.com/tu-dortmund-ls12-rt/SSSEvaluation/blob/master/schedTest/UNIFRAMEWORK.py"""
+
 # Schedulability test from "A Unifying Response Time Analysis Framework for
 # Dynamic Self-Suspending Tasks" from Chen, Nelissen, Huang in 2016
 # https://ls12-www.cs.tu-dortmund.de/daes/media/documents/publications/downloads/2016-chen-report-850.pdf
@@ -6,7 +10,7 @@ import math
 
 def compute_sum_entry_Eq4(t, Q, x, R, C, T):
     # Compute one entry of the sum on the left hand side from Equation 4.
-    return C*math.ceil((t+Q+(1-x)*(R-C))/T)
+    return C * math.ceil((t + Q + (1 - x) * (R - C)) / T)
 
 
 def compute_lhs_Eq4(task, HPTasks, vec_x, t, Q):
@@ -29,8 +33,8 @@ def compute_WCRT_bound(task, HPTasks, vec_x):
     # Compute Q.
     Q = []
     Qvar = 0.0
-    for idx in range(len(HPTasks)-1, 0-1, -1):  # from right to left
-        Qvar += HPTasks[idx]['sslength']*vec_x[idx]
+    for idx in range(len(HPTasks) - 1, 0 - 1, -1):  # from right to left
+        Qvar += HPTasks[idx]['sslength'] * vec_x[idx]
         Q.insert(0, Qvar)
     # for itask, ix in zip(HPTasks, vec_x):
     #     Q += itask['sslength']*ix
@@ -53,7 +57,7 @@ def compute_vec_lin_approx(tasks, index):
     sumU = 0
     for idx in range(index):
         itask = tasks[idx]  # task under consideration
-        iutil = itask['execution']/itask['period']  # util
+        iutil = itask['execution'] / itask['period']  # util
         sumU += iutil  # sum of utilizations
 
         # Compute lhs and rhs of Eq 27.

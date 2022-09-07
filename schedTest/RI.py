@@ -1,10 +1,13 @@
+#!/usr/bin/env python3
+"""Our schedulability test."""
+
+# TODO: RI -> EL everywhere
+
 from math import ceil  # ceiling function
 
 
 def set_prio(tasks, prio_policy=0, lam=0):
-    # if prio_policy not in [1, 2, 3, 4]:
-    #     print("Priority policy is not implemented.")
-    #     return
+    """Set relative priority points for the tasks."""
     if prio_policy == 2:  # DM
         p = 0
     for task in tasks:
@@ -24,23 +27,23 @@ def set_prio(tasks, prio_policy=0, lam=0):
         elif prio_policy == 12:
             task['prio_shift'] = task['sslength']
         elif prio_policy == 13:
-            task['prio_shift'] = task['deadline']*task['execution']
+            task['prio_shift'] = task['deadline'] * task['execution']
         elif prio_policy == 14:
             task['prio_shift'] = task['deadline'] * task['sslength']
         elif prio_policy == 15:
             task['prio_shift'] = task['execution'] * task['sslength']
         elif prio_policy == 16:
             task['prio_shift'] = task['deadline'] * \
-                (task['execution'] + 0.15 * task['sslength'])
+                                 (task['execution'] + 0.15 * task['sslength'])
         elif prio_policy == 17:
-            task['prio_shift'] = (task['deadline']+0.5 *
-                                  task['sslength'])*task['execution']
+            task['prio_shift'] = (task['deadline'] + 0.5 *
+                                  task['sslength']) * task['execution']
         # 3 EQDF Evaluation.
         elif prio_policy == 101:
-            task['prio_shift'] = task['deadline'] + lam*task['execution']
+            task['prio_shift'] = task['deadline'] + lam * task['execution']
         # 4 SAEDF Evaluation.
         elif prio_policy == 201:
-            task['prio_shift'] = task['deadline'] + lam*task['sslength']
+            task['prio_shift'] = task['deadline'] + lam * task['sslength']
 
 
 def RI_fixed(tasks, eta=0.01, depth=3, setprio=0):
@@ -94,14 +97,14 @@ def RI_fixed(tasks, eta=0.01, depth=3, setprio=0):
                 # Compute one candidate.
                 val = 0
                 val += ceil(
-                    (ord_tasks[indk]['deadline']-valb) /
+                    (ord_tasks[indk]['deadline'] - valb) /
                     ord_tasks[indk]['period']
-                )*(ord_tasks[indk]['execution']+ord_tasks[indk]['sslength'])
+                ) * (ord_tasks[indk]['execution'] + ord_tasks[indk]['sslength'])
                 for indi in range(len(ord_tasks)):
                     if indi == indk:  # only consider i != k
                         continue
                     val += max(ceil(
-                        (G[indi] + resp[indi] - valb)/ord_tasks[indi]['period']
+                        (G[indi] + resp[indi] - valb) / ord_tasks[indi]['period']
                     ), 0) * ord_tasks[indi]['execution']
                 val += valb
 
@@ -176,19 +179,19 @@ def RI_var(tasks, eta=0.01, max_a=1, depth=3, setprio=0):
                 if step <= 0:  # check if step is big enough
                     print('step is too small')
                     return False
-                while valb < inda*ord_tasks[indk]['period'] + ord_tasks[indk]['deadline']:
+                while valb < inda * ord_tasks[indk]['period'] + ord_tasks[indk]['deadline']:
                     # Compute one candidate.
                     val = 0
-                    val += min(inda+1, ceil(
-                        (ord_tasks[indk]['deadline']-valb + inda *
-                         ord_tasks[indk]['period'])/ord_tasks[indk]['period']
-                    ))*(ord_tasks[indk]['execution']+ord_tasks[indk]['sslength'])
+                    val += min(inda + 1, ceil(
+                        (ord_tasks[indk]['deadline'] - valb + inda *
+                         ord_tasks[indk]['period']) / ord_tasks[indk]['period']
+                    )) * (ord_tasks[indk]['execution'] + ord_tasks[indk]['sslength'])
                     for indi in range(len(ord_tasks)):
                         if indi == indk:  # only consider i != k
                             continue
                         val += max(ceil(
-                            (G[indi] + resp[indi] - valb + inda*ord_tasks[indk]
-                             ['period'])/ord_tasks[indi]['period']
+                            (G[indi] + resp[indi] - valb + inda * ord_tasks[indk]
+                            ['period']) / ord_tasks[indi]['period']
                         ), 0) * ord_tasks[indi]['execution']
                     val += valb - inda * ord_tasks[indk]['period']
 

@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+"""Taken from SSSEvaluation:
+https://github.com/tu-dortmund-ls12-rt/SSSEvaluation/blob/master/schedTest/FixedPriority.py"""
+
 # Typical fixed priority analyses using TDA.
 # E.g. specified in "A Unifying Response Time Analysis Framework for
 # Dynamic Self-Suspending Tasks" from Chen, Nelissen, Huang in 2016
@@ -26,8 +30,8 @@ def SuspObl_WCRT(task, HPTasks):
         # Compute lhs of Eq 1.
         wcrt = task['execution'] + task['sslength']
         for itask in HPTasks:
-            wcrt += math.ceil(t/itask['period'])*(
-                itask['execution']+itask['sslength'])
+            wcrt += math.ceil(t / itask['period']) * (
+                    itask['execution'] + itask['sslength'])
         if (wcrt > task['deadline']  # deadline miss
                 or wcrt <= t):  # Eq 1 holds
             break
@@ -57,8 +61,8 @@ def SuspJit_WCRT(task, HPTasks):
         wcrt = task['execution'] + task['sslength']
         for itask in HPTasks:
             wcrt += math.ceil(
-                (t + itask['wcrt_jit'] - itask['execution'])/itask['period']
-                )*itask['execution']
+                (t + itask['wcrt_jit'] - itask['execution']) / itask['period']
+            ) * itask['execution']
         if (wcrt > task['deadline']  # deadline miss
                 or wcrt <= t):  # Eq 2 holds
             break
@@ -93,7 +97,7 @@ def SuspBlock_WCRT(task, HPTasks):
         # Compute lhs of Eq 3.
         wcrt = task['execution'] + B
         for itask in HPTasks:
-            wcrt += math.ceil(t/itask['period'])*itask['execution']
+            wcrt += math.ceil(t / itask['period']) * itask['execution']
         if (wcrt > task['deadline']  # deadline miss
                 or wcrt <= t):  # Eq 2 holds
             break

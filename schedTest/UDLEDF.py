@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+"""Taken from SSSEvaluation:
+https://github.com/tu-dortmund-ls12-rt/SSSEvaluation/blob/master/schedTest/UDLEDF.py"""
+
 # FROM https://ieeexplore.ieee.org/document/7809868
 # Utilization-Based Method For EDF by Dong and Liu -- RTSS 2016
 # Both Schedulability tests give the same results as suspension oblivious (see EMSOFT20 paper by Guenzel, vdBrueggen and Chen).
@@ -8,6 +12,7 @@ import itertools
 def UDLEDF(tasks):
     # return UDLEDF_improved(tasks) # has too high runtime and memory usage
     return UDLEDF_simple(tasks)
+
 
 # Lemma 4 but with suspension oblivious if the test fails
 # Input: Task set
@@ -21,7 +26,7 @@ def UDLEDF_simple(tasks):
     totalutil = 0
     for i in range(len(tasks)):
         E.append(tasks[i]['execution'] + tasks[i]['sslength'])
-        v.append(tasks[i]['sslength']/tasks[i]['period'])
+        v.append(tasks[i]['sslength'] / tasks[i]['period'])
         if tasks[i]['period'] > Tmax:
             Tmax = tasks[i]['period']
         totalutil += tasks[i]['execution'] / tasks[i]['period']
@@ -32,7 +37,7 @@ def UDLEDF_simple(tasks):
     # check if equation 2 holds
     for k in range(1, len(tasks)):
         sumEi = 0
-        for i in range(int(math.floor(k/2.0))):
+        for i in range(int(math.floor(k / 2.0))):
             sumEi += E[i]
             if sumEi >= Tmax:
                 break
@@ -44,6 +49,7 @@ def UDLEDF_simple(tasks):
         checkval += v[i]
 
     return checkval <= 1
+
 
 # Calculate the sum of suspension ratios of the taskset
 # Input: Task set
@@ -57,7 +63,7 @@ def UDLEDF_ret(tasks):  # returns the checkval without totalutil
     # totalutil = 0
     for i in range(len(tasks)):
         E.append(tasks[i]['execution'] + tasks[i]['sslength'])
-        v.append(tasks[i]['sslength']/tasks[i]['period'])
+        v.append(tasks[i]['sslength'] / tasks[i]['period'])
         if tasks[i]['period'] > Tmax:
             Tmax = tasks[i]['period']
         # totalutil += tasks[i]['execution'] / tasks[i]['period']
@@ -68,7 +74,7 @@ def UDLEDF_ret(tasks):  # returns the checkval without totalutil
     # check if equation 2 holds
     for k in range(1, len(tasks)):
         sumEi = 0
-        for i in range(int(math.floor(k/2.0))):
+        for i in range(int(math.floor(k / 2.0))):
             sumEi += E[i]
             if sumEi >= Tmax:
                 break
@@ -90,7 +96,7 @@ def UDLEDF_improved(tasks):
     v = []
     totalutil = 0
     for i in range(len(tasks)):
-        v.append(tasks[i]['sslength']/tasks[i]['period'])
+        v.append(tasks[i]['sslength'] / tasks[i]['period'])
         totalutil += tasks[i]['execution'] / tasks[i]['period']
 
     # test susp obl
@@ -129,6 +135,6 @@ def getsubindices(n):
     for i in range(n):
         indices.append(i)
     indiceslist = []
-    for i in range(1, n+1):
+    for i in range(1, n + 1):
         indiceslist.extend(list(itertools.combinations(indices, i)))
     return indiceslist
