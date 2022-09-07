@@ -221,7 +221,7 @@ def check(ischeme, tasks, RI_depth=None, RI_max_a=None):
             numfail += 1
     # --- Else. ---
     else:
-        assert ischeme, 'not vaild ischeme'
+        raise ValueError(f"{ischeme=} is not valid.")
 
     return numfail
 
@@ -344,8 +344,7 @@ if __name__ == '__main__':
         Ncol = 2
         plotallname = '6b_arb_dl_edf'
     else:
-        print('No valid argument. Please choose from:', scheme_flag_options)
-        quit()
+        raise ValueError(f'{scheme_flag=} is no valid argument.')
 
     ###
     # Create Task sets

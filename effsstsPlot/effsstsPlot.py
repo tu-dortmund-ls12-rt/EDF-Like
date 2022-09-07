@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+"""Mainly taken from SSSEvaluation:
+https://github.com/tu-dortmund-ls12-rt/SSSEvaluation/blob/master/effsstsPlot/effsstsPlot.py"""
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
@@ -194,20 +197,10 @@ def pickLineStyle(ischeme):
 
 def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks, Ncol=3,
                 plotallname=''):
-    """
-    prints all plots
-    """
-    # sstype= ['S','M','L','0.15']
-    # ssofftypes = [2, 3, 5]
-    ssoprops = ['2', '5', '8']
+    """ Make a plot of the results obtained by schemes."""
 
-    figlabel = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
-    # prefix="effsstsPlot/data/"
-
-    # for three sub-plot, fixed
-    # fig = plt.figure(figsize=(13, 4))
     fig = plt.figure()
-    # create a virtual outer subsplot for putting big x-ylabel
+    # Create a virtual outer subsplot for putting big x-ylabel
     ax = fig.add_subplot(111)
     fig.subplots_adjust(top=0.8, left=0.2, right=0.95, bottom=0.25, hspace=0.3)
 
@@ -222,18 +215,25 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
     ax.set_yticks([0, 0.25, 0.50, 0.75, 1.0])
 
     i = 1
-    for ischeme in schemes:
+    for ischeme in schemes:  # iterate over schemes
+        # Load data with evaluation results
         ifile = prefix + "/" + str(minsstype) + "-" + str(maxsstype) + "/" + str(ssofftypes) + "/" + ischeme + str(
             numberoftasks) + ".npy"
         data = np.load(ifile)
         x = data[0][0::1]
         y = data[1][0::1]
-        us = int(math.ceil(ustart / ustep))
-        ue = int(math.floor(uend / ustep))
+
+        # Print results.
         print(x)
         print(y)
+
+        # Extract the correct values.
+        us = int(math.ceil(ustart / ustep))
+        ue = int(math.floor(uend / ustep))
         x = x[us:ue + 1]
         y = y[us:ue + 1]
+
+        # Plot.
         ax.plot(x, y,
                 pickLineStyle(ischeme),
                 color=pickColor(ischeme),
@@ -245,6 +245,7 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
                 linewidth=1.8,
                 clip_on=False)
         if i == 1:
+            # Add a legend.
             ax.legend(
                 bbox_to_anchor=(0.42, 1.15),
                 loc=10,
@@ -256,15 +257,11 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
                 handletextpad=0.5,  # space between handle and text
                 columnspacing=1.,  # space between columns
                 prop={'size': 18})
-
-    # ax.set_title('No. of tasks: '+str(numberoftasks)+', Self-suspension length: ' +
-    # str(minsstype)+"-"+str(maxsstype), size=10, y=0.99, fontsize=20)
+        i += 1
+    # Add grid.
     ax.grid()
-    i += 1
-    # fig.savefig(prefix+"/"+isstype+"/"+issofftypes +
-    #           "/"+ischeme+".pdf", bbox_inches='tight')
 
-    # plt.show()
+    # Store pdf under the specific name.
     if plotall:
         if plotallname != '':
             fig.savefig(prefix + '/' + plotallname + '.pdf', bbox_inches='tight')
@@ -280,19 +277,21 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
             maxsstype) + '][' + str(numberoftasks) + '].pdf', bbox_inches='tight')
         print('[DONE]', '/' + prefix + '/' + schemes[0] + '[' + str(ssofftypes) + '][' + str(minsstype) + "-" + str(
             maxsstype) + '][' + str(numberoftasks) + '].pdf')
-    # sys.exit()
 
 
 def effsstsPlotAll(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks,
                    Ncol=3, plotsingle=True, plotallname=''):
+    """Plot function."""
+    # Print the plot variables.
     print('-------------------------------------------------------')
     print(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks)
     print('-------------------------------------------------------')
-    if plotsingle:
+    # Plot.
+    if plotsingle:  # One plot for each scheme.
         for scheme in schemes:
             effsstsPlot(prefix, False, [scheme], minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks,
                         Ncol=Ncol)
-    if (plotall):
+    if plotall:  # One combined plot all schemes.
         effsstsPlot(prefix, True, schemes, minsstype, maxsstype, ssofftypes, ustart, uend, ustep, numberoftasks,
                     Ncol=Ncol, plotallname=plotallname)
 
@@ -301,20 +300,11 @@ def effsstsPlotRuntime(
         prefix, schemes, num_tasks_start, num_tasks_end, num_tasks_step,
         Ncol=3, plotallname=' ', method='avg', ylabel='Runtime (s)',
         show_legend=True):
-    """
-    Runtime eval
-    """
-    # sstype= ['S','M','L','0.15']
-    # ssofftypes = [2, 3, 5]
-    # ssoprops = ['2', '5', '8']
-    #
-    # figlabel = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
-    # prefix="effsstsPlot/data/"
+    """Make plots for the runtime evalutiation.
+    (Plots are not presented in the paper, only the values are reported.)"""
 
-    # for three sub-plot, fixed
-    # fig = plt.figure(figsize=(13, 4))
     fig = plt.figure()
-    # create a virtual outer subsplot for putting big x-ylabel
+    # Create a virtual outer subsplot for putting big x-ylabel
     ax = fig.add_subplot(111)
     fig.subplots_adjust(top=0.9, left=0.1, right=0.95, hspace=0.3)
 
@@ -328,7 +318,8 @@ def effsstsPlotRuntime(
                    bottom=False, left=False, right=False, labelsize=22)
 
     i = 1
-    for ischeme in schemes:
+    for ischeme in schemes:  # iterate over schemes
+        # Load data with evaluation results
         x = []
         y = []
         for numberoftasks in range(num_tasks_start, num_tasks_end, num_tasks_step):
@@ -339,9 +330,12 @@ def effsstsPlotRuntime(
                 y.append(np.average(data))
             elif method == 'max':
                 y.append(np.max(data))
+
+        # Print results.
         print(x)
         print(y)
 
+        # Plot.
         ax.plot(x, y,
                 pickLineStyle(ischeme),
                 color=pickColor(ischeme),
@@ -353,6 +347,7 @@ def effsstsPlotRuntime(
                 linewidth=1.8,
                 clip_on=False)
         if i == 1:
+            # Add a legend.
             if show_legend is True:
                 ax.legend(
                     bbox_to_anchor=(0.42, 1.15),
@@ -365,19 +360,10 @@ def effsstsPlotRuntime(
                     handletextpad=0.5,  # space between handle and text
                     columnspacing=1.,  # space between columns
                     prop={'size': 20})
+        i += 1
 
-    # ax.set_yscale('log')  # log scale
-
+    # Add grid.
     ax.grid()
-    i += 1
 
+    # Store pdf under the specific name.
     fig.savefig(prefix + '/' + plotallname + '.pdf', bbox_inches='tight')
-
-
-if __name__ == '__main__':
-    args = sys.argv
-    print(args)
-    testSchemes = ['EDA', 'NC', 'SCEDF', 'PASS-OPA']
-    testSelfSuspendingType = ['S', 'M', 'L']
-    testNumberofSegments = [2]
-    effsstsPlotAll(args[1], True, testSchemes, testSelfSuspendingType, testNumberofSegments, 1, 99, 5, 10)

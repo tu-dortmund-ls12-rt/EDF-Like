@@ -6,104 +6,29 @@ from effsstsPlot import effsstsPlot  # Plot function from SSSEvaluation
 # other packages
 import numpy as np
 import os
-import sys
 import random
 import time
 from itertools import repeat
 from multiprocessing import Pool  # multiprocessing
-
-###
-# Global preferences.
-###
-
-# # == Configuration from the experiments == #
-#
-# gTotBucket = 100  # total number of task sets per utilization
-#
-# # number of tasks
-# num_tasks_start = 10
-# num_tasks_end = 210
-# num_tasks_step = 10
-#
-# gUStep = 10  # utilization step
-# gUStart = 0  # utilization start
-# gUEnd = 100  # utilization end
-#
-# # Share from period - wcet for self-suspension:
-# gMaxsstype = 0.5  # maximal total self-suspension length
-# gMinsstype = 0.0  # minimal total self-suspension length
-#
-# gSSofftypes = 0  # number of segments does not matter
-#
-# Ncol = 3  # number of columns in Legend
-#
-# RI_depth = 5  # depth for EL schedulability test
-# RI_max_a = 10  # maximal a for EL schedulability test
-#
-# num_processors = 100  # number of processors for the evaluation
-
-# == Simplified configurations for quick check == #
-
-gTotBucket = 10  # total number of task sets per utilization
-
-# number of tasks
-num_tasks_start = 10
-num_tasks_end = 210
-num_tasks_step = 95
-
-gUStep = 50  # utilization step
-gUStart = 0  # utilization start
-gUEnd = 100  # utilization end
-
-# Share from period - wcet for self-suspension:
-gMaxsstype = 0.5  # maximal total self-suspension length
-gMinsstype = 0.0  # minimal total self-suspension length
-
-gSSofftypes = 0  # number of segments does not matter
-
-Ncol = 3  # number of columns in Legend
-
-RI_depth = 2  # depth for EL schedulability test
-RI_max_a = 2  # maximal a for EL schedulability test
-
-num_processors = 6  # number of processors for the evaluation
-
-plotallname = ''
-
-# Plotting preferences.
-gPlotdata = True  # flag to plot data
-gPlotall = True
-gPlotsingle = False
-gPrefixdata = "effsstsPlot/Data"  # path to store data
+from argparse import ArgumentParser
 
 
-# Help function to plot results.
-def plot_results(
-        gPrefixdata, gPlotall, gSchemes, gMinsstype, gMaxsstype,
-        gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol,
-        gPlotsingle, plotallname):
-    """ Plot the results.
-    """
-    if len(gSchemes) != 0:
-        try:
-            effsstsPlot.effsstsPlotRuntime(
-                gPrefixdata, gPlotall, gSchemes, gMinsstype, gMaxsstype,
-                gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol=Ncol,
-                plotsingle=gPlotsingle, plotallname=plotallname)
-        except Exception as e:
-            return False
-    else:
-        MainWindow.statusBar().showMessage('There is no plot to draw.')
-    return True
-
-
-# if gPlotdata:
-#     # If data can be used, plot directly.
-#     if plot_results(
-#             gPrefixdata, gPlotall, gSchemes, gMinsstype, gMaxsstype,
-#             gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol,
-#             gPlotsingle, plotallname) is True:
-#         quit()
+# def plot_results(
+#         gPrefixdata, gSchemes, gMinsstype, gMaxsstype,
+#         gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol, plotallname):
+#     """ Plot the results.
+#     """
+#     if len(gSchemes) != 0:
+#         try:
+#             effsstsPlot.effsstsPlotRuntime(
+#                 gPrefixdata, True, gSchemes, gMinsstype, gMaxsstype,
+#                 gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol=Ncol,
+#                 plotsingle=False, plotallname=plotallname)
+#         except Exception as e:
+#             return False
+#     else:
+#         MainWindow.statusBar().showMessage('There is no plot to draw.')
+#     return True
 
 
 def create_tasksets(number_tasks):
@@ -134,23 +59,7 @@ def create_tasksets(number_tasks):
     return tasksets_difutil
 
 
-# breakpoint()
-
-###
-# Schedulability tests
-###
-
-# # --- bug testing
-# for tasksets in tasksets_difutil:
-#     for tasks in tasksets:
-#         RI.set_prio(tasks, prio_policy=2)
-#         if RI.RI_fixed(tasks, depth=RI_depth) != RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a):
-#             breakpoint()
-#     print('done')
-# quit()
-# # ---
-
-def runtime_eval(ischeme, tasksets_difutil, num_processors):
+def runtime_eval(ischeme, tasksets_difutil, num_processors, RI_depth=None, RI_max_a=None):
     x = np.arange(gUStart, gUEnd + 1, gUStep)
     print(x)
     y = np.zeros(int((gUEnd - gUStart) / gUStep) + 1)
@@ -166,115 +75,73 @@ def runtime_eval(ischeme, tasksets_difutil, num_processors):
               len(tasksets[0]), "U:", gUStart + u * gUStep, "SSLength:",
               str(gMinsstype), " - ", str(gMaxsstype))
 
-        # if u == 0:  # utilization of 0 percent
-        #     y[u] = 1
-        #     continue
-        # if u * gUStep == 100:  # utilization 100 percent
-        #     y[u] = 0
-        #     continue
-        # if ifskip:  # skip iteration when flag is done
-        #     print("acceptanceRatio:", 0)
-        #     y[u] = 0
-        #     continue
-
-        # numfail = 0  # number of fails
-
         with Pool(num_processors) as p:
-            runtimes_difutil = p.starmap(timing, zip(repeat(ischeme), tasksets))
+            runtimes_difutil = p.starmap(timing, zip(repeat(ischeme), tasksets, repeat(RI_depth), repeat(RI_max_a)))
         runtimes.extend(list(runtimes_difutil))  # add runtime values
-
-        # acceptanceRatio = 1 - (numfail / len(tasksets))
-        # print("acceptanceRatio:", acceptanceRatio)
-        # y[u] = acceptanceRatio
 
     return runtimes
 
 
-def timing(ischeme, tasks):
+def timing(ischeme, tasks, RI_depth=None, RI_max_a=None):
+    """Return the time it takes to run the schedulability test ischeme once for tasks."""
     start = time.time()  # start timer
-
-    numfail = 0  # PEUDO - INITIALIZATION (we did not deal with removing it at all places)
 
     # --- 1 DM Evaluation. ---
     if ischeme == 'EL DM':  # RI scheduling
         RI.set_prio(tasks, prio_policy=2)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'UniFramework':
-        if UniFramework.UniFramework(tasks) is False:
-            numfail += 1
+        UniFramework.UniFramework(tasks)
     elif ischeme == 'SuspObl':
-        if FP_Analyses.SuspObl(tasks) is False:
-            numfail += 1
+        FP_Analyses.SuspObl(tasks)
     elif ischeme == 'SuspJit':
-        if FP_Analyses.SuspJit(tasks) is False:
-            numfail += 1
+        FP_Analyses.SuspJit(tasks)
     elif ischeme == 'SuspBlock':
-        if FP_Analyses.SuspBlock(tasks) is False:
-            numfail += 1
+        FP_Analyses.SuspBlock(tasks)
     # --- 2 EDF Evaluation. ---
     elif ischeme == 'EL EDF':  # RI scheduling
         RI.set_prio(tasks, prio_policy=3)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'Our EMSoft':  # Our EMSoft
-        if RTEDF.RTEDF(tasks) is False:
-            numfail += 1
+        RTEDF.RTEDF(tasks)
     elif ischeme == 'Dong and Liu':
-        if UDLEDF.UDLEDF(tasks) is False:
-            numfail += 1
+        UDLEDF.UDLEDF(tasks)
     elif ischeme == 'Liu and Anderson':
-        if WLAEDF.WLAEDF(tasks) is False:
-            numfail += 1
+        WLAEDF.WLAEDF(tasks)
     elif ischeme == 'Susp as Comp':
-        if SCEDF.SC_EDF(tasks) is False:
-            numfail += 1
+        SCEDF.SC_EDF(tasks)
     # --- 3 EQDF Evaluation. ---
     elif ischeme == 'EL EQDF lam=0':
         RI.set_prio(tasks, prio_policy=101, lam=0)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL EQDF lam=-1':
         RI.set_prio(tasks, prio_policy=101, lam=-1)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL EQDF lam=+1':
         RI.set_prio(tasks, prio_policy=101, lam=+1)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL EQDF any lam in [-10,10]':
-        fail_flag = True
         for lam in [0] + list(range(-10, 11, 1)):  # lam range
             # (Testing 0 first gives results faster.)
             RI.set_prio(tasks, prio_policy=101, lam=lam)
             if RI.RI_fixed(tasks, depth=RI_depth) is True:
-                fail_flag = False
                 break
-        if fail_flag:
-            numfail += 1
     # --- 4 SAEDF Evaluation. ---
     elif ischeme == 'EL SAEDF lam=0':
         RI.set_prio(tasks, prio_policy=201, lam=0)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL SAEDF lam=-1':
         RI.set_prio(tasks, prio_policy=201, lam=-1)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL SAEDF lam=+1':
         RI.set_prio(tasks, prio_policy=201, lam=+1)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL SAEDF any lam in [-10,10]':
-        fail_flag = True
         for lam in [0] + list(range(-10, 11, 1)):  # lam range
             # (Testing 0 first gives results faster.)
             RI.set_prio(tasks, prio_policy=201, lam=lam)
             if RI.RI_fixed(tasks, depth=RI_depth) is True:
-                fail_flag = False
                 break
-        if fail_flag:
-            numfail += 1
     # --- 5a Arb deadline DM Evaluation. ---
     elif ischeme == 'EL-fix DM D1.0':
         # Set Deadlines.
@@ -283,26 +150,22 @@ def timing(ischeme, tasks):
         # Set priorities.
         RI.set_prio(tasks, prio_policy=2)
         # Sched test.
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL-fix DM D1.1':
         for itask in tasks:
             itask['deadline'] = 1.1 * itask['period']
         RI.set_prio(tasks, prio_policy=2)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL-fix DM D1.2':
         for itask in tasks:
             itask['deadline'] = 1.2 * itask['period']
         RI.set_prio(tasks, prio_policy=2)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL-fix DM D1.5':
         for itask in tasks:
             itask['deadline'] = 1.5 * itask['period']
         RI.set_prio(tasks, prio_policy=2)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     # --- 5b Arb deadline DM Evaluation. ---
     elif ischeme == 'EL-var DM D1.0':
         # Set Deadlines.
@@ -311,26 +174,22 @@ def timing(ischeme, tasks):
         # Set priorities.
         RI.set_prio(tasks, prio_policy=2)
         # Sched test.
-        if RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a) is False:
-            numfail += 1
+        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
     elif ischeme == 'EL-var DM D1.1':
         for itask in tasks:
             itask['deadline'] = 1.1 * itask['period']
         RI.set_prio(tasks, prio_policy=2)
-        if RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a) is False:
-            numfail += 1
+        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
     elif ischeme == 'EL-var DM D1.2':
         for itask in tasks:
             itask['deadline'] = 1.2 * itask['period']
         RI.set_prio(tasks, prio_policy=2)
-        if RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a) is False:
-            numfail += 1
+        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
     elif ischeme == 'EL-var DM D1.5':
         for itask in tasks:
             itask['deadline'] = 1.5 * itask['period']
         RI.set_prio(tasks, prio_policy=2)
-        if RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a) is False:
-            numfail += 1
+        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
     # --- 6a Arb deadline EDF Evaluation. ---
     elif ischeme == 'EL-fix EDF D1.0':
         # Set Deadlines.
@@ -339,26 +198,22 @@ def timing(ischeme, tasks):
         # Set priorities.
         RI.set_prio(tasks, prio_policy=3)
         # Sched test.
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL-fix EDF D1.1':
         for itask in tasks:
             itask['deadline'] = 1.1 * itask['period']
         RI.set_prio(tasks, prio_policy=3)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL-fix EDF D1.2':
         for itask in tasks:
             itask['deadline'] = 1.2 * itask['period']
         RI.set_prio(tasks, prio_policy=3)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     elif ischeme == 'EL-fix EDF D1.5':
         for itask in tasks:
             itask['deadline'] = 1.5 * itask['period']
         RI.set_prio(tasks, prio_policy=3)
-        if RI.RI_fixed(tasks, depth=RI_depth) is False:
-            numfail += 1
+        RI.RI_fixed(tasks, depth=RI_depth)
     # --- 6b Arb deadline EDF Evaluation. ---
     elif ischeme == 'EL-var EDF D1.0':
         # Set Deadlines.
@@ -367,29 +222,25 @@ def timing(ischeme, tasks):
         # Set priorities.
         RI.set_prio(tasks, prio_policy=3)
         # Sched test.
-        if RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a) is False:
-            numfail += 1
+        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
     elif ischeme == 'EL-var EDF D1.1':
         for itask in tasks:
             itask['deadline'] = 1.1 * itask['period']
         RI.set_prio(tasks, prio_policy=3)
-        if RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a) is False:
-            numfail += 1
+        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
     elif ischeme == 'EL-var EDF D1.2':
         for itask in tasks:
             itask['deadline'] = 1.2 * itask['period']
         RI.set_prio(tasks, prio_policy=3)
-        if RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a) is False:
-            numfail += 1
+        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
     elif ischeme == 'EL-var EDF D1.5':
         for itask in tasks:
             itask['deadline'] = 1.5 * itask['period']
         RI.set_prio(tasks, prio_policy=3)
-        if RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a) is False:
-            numfail += 1
+        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
     # --- Else. ---
     else:
-        assert ischeme, 'not vaild ischeme'
+        raise ValueError(f"{ischeme=} is not valid.")
 
     return time.time() - start
 
@@ -405,45 +256,105 @@ def store_results(ischeme, number_tasks, runtimes):
     np.save(plotfile, runtimes)
 
 
-# if gPlotdata:
-#     # Plot data after Evaluation results.
-#     if plot_results(
-#             gPrefixdata, gPlotall, gSchemes, gMinsstype, gMaxsstype,
-#             gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol,
-#             gPlotsingle, plotallname) is True:
-#         quit()
-
 if __name__ == '__main__':
+    ###
+    # Options
+    ###
+    parser = ArgumentParser()
+    parser.add_argument("-q", "--quick", dest="quick", action="store_true", default=False,
+                        help="Run only a small configuration to test that the program runs. Otherwise, the full evaluation is performed.")
+    parser.add_argument("-p", "--processes", dest="proc", type=int,
+                        help="Specify the number of concurrent processes.")
+    parser.add_argument("scheme", help="Choose a scheme flag option from: [1]")
+    args = vars(parser.parse_args())
 
-    # Schedulability tests to be run:
-    scheme_flag_options = ['1']
+    ###
+    # Global preferences.
+    ###
+    if args["quick"]:  # Quick setting to check if the program runs completely without Error.
+        gTotBucket = 10  # total number of task sets per utilization
 
-    if len(sys.argv) == 1:
-        print('Please provide additional argument to choose schedulability tests.')
-        print('Please choose from:', scheme_flag_options)
-        quit()
+        # number of tasks
+        num_tasks_start = 10
+        num_tasks_end = 210
+        num_tasks_step = 95
 
-    scheme_flag = sys.argv[1]
+        gUStep = 50  # utilization step
+        gUStart = 0  # utilization start
+        gUEnd = 100  # utilization end
+
+        # Share from period - wcet for self-suspension:
+        gMaxsstype = 0.5  # maximal total self-suspension length
+        gMinsstype = 0.0  # minimal total self-suspension length
+
+        gSSofftypes = 0  # number of segments does not matter
+
+        Ncol = 3  # number of columns in Legend
+
+        RI_depth = 2  # depth for EL schedulability test
+        RI_max_a = 2  # maximal a for EL schedulability test
+
+        num_processors = 6  # number of processors for the evaluation
+    else:  # Full evaluation.
+        gTotBucket = 100  # total number of task sets per utilization
+
+        # number of tasks
+        num_tasks_start = 10
+        num_tasks_end = 210
+        num_tasks_step = 10
+
+        gUStep = 10  # utilization step
+        gUStart = 0  # utilization start
+        gUEnd = 100  # utilization end
+
+        # Share from period - wcet for self-suspension:
+        gMaxsstype = 0.5  # maximal total self-suspension length
+        gMinsstype = 0.0  # minimal total self-suspension length
+
+        gSSofftypes = 0  # number of segments does not matter
+
+        Ncol = 3  # number of columns in Legend
+
+        RI_depth = 5  # depth for EL schedulability test
+        RI_max_a = 10  # maximal a for EL schedulability test
+
+        num_processors = 100  # number of processors for the evaluation
+
+    # Further plotting preferences
+    gPrefixdata = "effsstsPlot/Data"  # path to store data
+
+    # Modify the number of processes
+    if args["proc"] is not None and args["proc"] > 0:
+        num_processors = args["proc"]
+
+    # Set the scheme flag.
+    scheme_flag = args["scheme"]
+
+    ###
+    # Choose schedulability tests to be run + assign corresponding gSchemes and plotallname:
+    ###
+    plotallname = ''
     if scheme_flag == '1':
         # 1 EDF
         gSchemes = ['EL EDF', 'Our EMSoft', 'Liu and Anderson']
         plotallname = '1_runtime_edf'
-    elif scheme_flag == '2':
-        # 1 EDF
-        gSchemes = ['EL EDF']
-        plotallname = '2_runtime_edf'
     else:
-        print('No valid argument. Please choose from:', scheme_flag_options)
-        quit()
+        raise ValueError(f'{scheme_flag=} is no valid argument.')
 
-    # runtime tests
+    ###
+    # Runtime tests.
+    ###
     for number_tasks in range(num_tasks_start, num_tasks_end, num_tasks_step):
+        # Create tasksets.
         tasksets_difutil = create_tasksets(number_tasks)
+        # Do the tests + measure the runtime.
         for ischeme in gSchemes:
-            runtimes = runtime_eval(ischeme, tasksets_difutil, num_processors)
+            runtimes = runtime_eval(ischeme, tasksets_difutil, num_processors, RI_depth=RI_depth, RI_max_a=RI_max_a)
             store_results(ischeme, number_tasks, runtimes)
 
-    # plot
+    ###
+    # Plot.
+    ###
     effsstsPlot.effsstsPlotRuntime(
         gPrefixdata, gSchemes, num_tasks_start, num_tasks_end, num_tasks_step,
         Ncol=3, plotallname='runtime_eval_' + str(scheme_flag) + '_avg', method='avg', ylabel='Average Runtime (s)',
