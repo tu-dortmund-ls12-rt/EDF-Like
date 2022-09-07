@@ -6,7 +6,7 @@ if [ $# -gt 0 ]
 then
   processes="$1"
 else
-  processes="0"  # This means: default number
+  processes="0"  # This means: default number which is 100
 fi
 
 # Run performance comparison

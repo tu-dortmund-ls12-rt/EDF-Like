@@ -252,20 +252,20 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
                 label=pickName(ischeme),
                 linewidth=1.8,
                 clip_on=False)
-        if i == 1:
-            # Add a legend.
-            ax.legend(
-                bbox_to_anchor=(0.42, 1.15),
-                loc=10,
-                markerscale=1.3,
-                ncol=Ncol,
-                borderaxespad=0.,
-                labelspacing=0.2,  # space between rows
-                handlelength=1.8,  # length of the legend line under marker
-                handletextpad=0.5,  # space between handle and text
-                columnspacing=1.,  # space between columns
-                prop={'size': 18})
-        i += 1
+        
+    # Add a legend.
+    ax.legend(
+        bbox_to_anchor=(0.42, 1.15),
+        loc=10,
+        markerscale=1.3,
+        ncol=Ncol,
+        borderaxespad=0.,
+        labelspacing=0.2,  # space between rows
+        handlelength=1.8,  # length of the legend line under marker
+        handletextpad=0.5,  # space between handle and text
+        columnspacing=1.,  # space between columns
+        prop={'size': 18})
+
     # Add grid.
     ax.grid()
 
@@ -354,21 +354,20 @@ def effsstsPlotRuntime(
                 label=pickName(ischeme),
                 linewidth=1.8,
                 clip_on=False)
-        if i == 1:
-            # Add a legend.
-            if show_legend is True:
-                ax.legend(
-                    bbox_to_anchor=(0.42, 1.15),
-                    loc=10,
-                    markerscale=1.3,
-                    ncol=Ncol,
-                    borderaxespad=0.,
-                    labelspacing=0.2,  # space between rows
-                    handlelength=1.8,  # length of the legend line under marker
-                    handletextpad=0.5,  # space between handle and text
-                    columnspacing=1.,  # space between columns
-                    prop={'size': 20})
-        i += 1
+
+    # Add a legend.
+    if show_legend is True:
+        ax.legend(
+            bbox_to_anchor=(0.42, 1.15),
+            loc=10,
+            markerscale=1.3,
+            ncol=Ncol,
+            borderaxespad=0.,
+            labelspacing=0.2,  # space between rows
+            handlelength=1.8,  # length of the legend line under marker
+            handletextpad=0.5,  # space between handle and text
+            columnspacing=1.,  # space between columns
+            prop={'size': 20})
 
     # Add grid.
     ax.grid()

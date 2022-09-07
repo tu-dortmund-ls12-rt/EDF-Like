@@ -280,6 +280,7 @@ if __name__ == '__main__':
         EL_max_a = 2  # maximal a for EL schedulability test
 
         num_processors = 6  # number of processors for the evaluation
+
     else:  # Full evaluation.
         gTotBucket = 100  # total number of task sets per utilization
 
@@ -343,9 +344,9 @@ if __name__ == '__main__':
     effsstsPlot.effsstsPlotRuntime(
         gPrefixdata, gSchemes, num_tasks_start, num_tasks_end, num_tasks_step,
         Ncol=3, plotallname='runtime_eval_' + str(scheme_flag) + '_avg', method='avg', ylabel='Average Runtime (s)',
-        show_legend=False)
+        show_legend=True)
 
     effsstsPlot.effsstsPlotRuntime(
         gPrefixdata, gSchemes, num_tasks_start, num_tasks_end, num_tasks_step,
         Ncol=3, plotallname='runtime_eval_' + str(scheme_flag) + '_max', method='max', ylabel='Maximal Runtime (s)',
-        show_legend=False)
+        show_legend=True)
