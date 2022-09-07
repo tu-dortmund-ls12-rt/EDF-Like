@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 import math
+import os
 
 
 ###
@@ -252,7 +253,7 @@ def effsstsPlot(prefix, plotall, schemes, minsstype, maxsstype, ssofftypes, usta
                 label=pickName(ischeme),
                 linewidth=1.8,
                 clip_on=False)
-        
+
     # Add a legend.
     ax.legend(
         bbox_to_anchor=(0.42, 1.15),
@@ -316,8 +317,8 @@ def effsstsPlotRuntime(
     ax = fig.add_subplot(111)
     fig.subplots_adjust(top=0.9, left=0.1, right=0.95, hspace=0.3)
 
-    ax.set_xlabel('#Tasks', fontsize=23)
-    ax.set_ylabel(ylabel, fontsize=23)
+    ax.set_xlabel('#Tasks', size=15, fontsize=23)
+    ax.set_ylabel(ylabel, size=15, fontsize=23)
     ax.spines['top'].set_color('black')
     ax.spines['bottom'].set_color('black')
     ax.spines['left'].set_color('black')
@@ -374,3 +375,56 @@ def effsstsPlotRuntime(
 
     # Store pdf under the specific name.
     fig.savefig(prefix + '/' + plotallname + '.pdf', bbox_inches='tight')
+
+
+def plot_comparison(schemes, results_plot, plotpath, plotname='', Ncol=3):
+    """Plot the comparison between GUC21 and EL."""
+    fig = plt.figure()
+
+    # Xreate a virtual outer subsplot for putting big x-ylabel
+    ax = fig.add_subplot(111)
+    fig.subplots_adjust(top=0.8, left=0.2, right=0.95, bottom=0.2, hspace=0.3)
+
+    ax.set_xlabel('Utilization (%)', size=15, fontsize=23)
+    ax.set_ylabel('Acceptance Ratio', size=15, fontsize=23)
+    ax.spines['top'].set_color('black')
+    ax.spines['bottom'].set_color('black')
+    ax.spines['left'].set_color('black')
+    ax.spines['right'].set_color('black')
+    ax.tick_params(labelcolor='black', top=False,
+                   bottom=False, left=False, right=False, labelsize=20)
+
+    # plot results
+    for ischeme, results in zip(schemes, results_plot):
+        x, y = zip(*results)
+
+        ax.plot(x, y,
+                pickLineStyle(ischeme),
+                color=pickColor(ischeme),
+                marker=pickMarker(ischeme),
+                markersize=8,
+                markevery=1,
+                fillstyle='none',
+                label=pickName(ischeme),
+                linewidth=1.8,
+                clip_on=False)
+
+    # legend
+    ax.legend(
+        bbox_to_anchor=(0.42, 1.15),
+        loc=10,
+        markerscale=1.3,
+        ncol=Ncol,
+        borderaxespad=0.,
+        labelspacing=0.2,  # space between rows
+        handlelength=1.8,  # length of the legend line under marker
+        handletextpad=0.5,  # space between handle and text
+        columnspacing=1.,  # space between columns
+        prop={'size': 20})
+
+    ax.grid()
+
+    if not os.path.exists(plotpath):
+        os.makedirs(plotpath)
+    file = os.path.join(plotpath, plotname + '.pdf')
+    fig.savefig(file, bbox_inches='tight')
