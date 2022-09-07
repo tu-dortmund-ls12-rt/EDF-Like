@@ -16,24 +16,6 @@ from multiprocessing import Pool  # multiprocessing
 from argparse import ArgumentParser
 
 
-# def plot_results(
-#         gPrefixdata, gSchemes, gMinsstype, gMaxsstype,
-#         gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol, plotallname):
-#     """ Plot the results.
-#     """
-#     if len(gSchemes) != 0:
-#         try:
-#             effsstsPlot.effsstsPlotRuntime(
-#                 gPrefixdata, True, gSchemes, gMinsstype, gMaxsstype,
-#                 gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol=Ncol,
-#                 plotsingle=False, plotallname=plotallname)
-#         except Exception as e:
-#             return False
-#     else:
-#         MainWindow.statusBar().showMessage('There is no plot to draw.')
-#     return True
-
-
 def create_tasksets(number_tasks):
     ###
     # Create Task sets
