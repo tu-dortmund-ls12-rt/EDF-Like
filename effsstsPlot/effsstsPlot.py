@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Most functions taken from or inspired by SSSEvaluation:
 https://github.com/tu-dortmund-ls12-rt/SSSEvaluation/blob/master/effsstsPlot/effsstsPlot.py"""
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import random
