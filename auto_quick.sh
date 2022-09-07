@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script to obtain the Paper results automatically.
+# Script to run the RTSS experiments with faster configuration, to test if the program runs without errors.
 
 # Set number of processes
 if [ $# -gt 0 ]

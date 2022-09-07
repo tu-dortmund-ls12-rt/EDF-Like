@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+"""This is the main file of our evaluation."""
+
 from schedTest import tgPath  # Task generation from SSSEvaluation
 from schedTest import RTEDF, UDLEDF, SCEDF, WLAEDF, UniFramework, FP_Analyses  # Analyses from SSSEvaluation
 from schedTest import RI  # Our analysis

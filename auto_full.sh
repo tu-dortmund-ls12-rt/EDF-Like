@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script to obtain the Paper results automatically.
+# Script to obtain the results from the RTSS paper automatically.
 
 # Set number of processes
 if [ $# -gt 0 ]
