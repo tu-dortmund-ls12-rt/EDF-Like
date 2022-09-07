@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Our schedulability test."""
 
-# TODO: RI -> EL everywhere
-
 from math import ceil  # ceiling function
 
 
@@ -46,7 +44,7 @@ def set_prio(tasks, prio_policy=0, lam=0):
             task['prio_shift'] = task['deadline'] + lam * task['sslength']
 
 
-def RI_fixed(tasks, eta=0.01, depth=3, setprio=0):
+def EL_fixed(tasks, eta=0.01, depth=3, setprio=0):
     """Main function to run the schedulability test with fixed analysis window.
     - tasks = the task set under analysis
         - priority shift is an additional parameter in task
@@ -126,7 +124,7 @@ def RI_fixed(tasks, eta=0.01, depth=3, setprio=0):
     return solved
 
 
-def RI_var(tasks, eta=0.01, max_a=1, depth=3, setprio=0):
+def EL_var(tasks, eta=0.01, max_a=1, depth=3, setprio=0):
     """Main function to run the schedulability test with variable analysis
     window.
     - tasks = the task set under analysis

@@ -3,7 +3,7 @@
 
 from schedTest import tgPath  # Task generation from SSSEvaluation
 from schedTest import RTEDF, UDLEDF, SCEDF, WLAEDF, UniFramework, FP_Analyses  # Analyses from SSSEvaluation
-from schedTest import RI  # Our analysis
+from schedTest import EL  # Our analysis
 from effsstsPlot import effsstsPlot  # Plot function from SSSEvaluation
 
 # other packages
@@ -44,7 +44,7 @@ def create_tasksets(number_tasks):
     return tasksets_difutil
 
 
-def runtime_eval(ischeme, tasksets_difutil, num_processors, RI_depth=None, RI_max_a=None):
+def runtime_eval(ischeme, tasksets_difutil, num_processors, EL_depth=None, EL_max_a=None):
     x = np.arange(gUStart, gUEnd + 1, gUStep)
     print(x)
     y = np.zeros(int((gUEnd - gUStart) / gUStep) + 1)
@@ -61,20 +61,20 @@ def runtime_eval(ischeme, tasksets_difutil, num_processors, RI_depth=None, RI_ma
               str(gMinsstype), " - ", str(gMaxsstype))
 
         with Pool(num_processors) as p:
-            runtimes_difutil = p.starmap(timing, zip(repeat(ischeme), tasksets, repeat(RI_depth), repeat(RI_max_a)))
+            runtimes_difutil = p.starmap(timing, zip(repeat(ischeme), tasksets, repeat(EL_depth), repeat(EL_max_a)))
         runtimes.extend(list(runtimes_difutil))  # add runtime values
 
     return runtimes
 
 
-def timing(ischeme, tasks, RI_depth=None, RI_max_a=None):
+def timing(ischeme, tasks, EL_depth=None, EL_max_a=None):
     """Return the time it takes to run the schedulability test ischeme once for tasks."""
     start = time.time()  # start timer
 
     # --- 1 DM Evaluation. ---
-    if ischeme == 'EL DM':  # RI scheduling
-        RI.set_prio(tasks, prio_policy=2)
-        RI.RI_fixed(tasks, depth=RI_depth)
+    if ischeme == 'EL DM':  # EL scheduling
+        EL.set_prio(tasks, prio_policy=2)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'UniFramework':
         UniFramework.UniFramework(tasks)
     elif ischeme == 'SuspObl':
@@ -84,9 +84,9 @@ def timing(ischeme, tasks, RI_depth=None, RI_max_a=None):
     elif ischeme == 'SuspBlock':
         FP_Analyses.SuspBlock(tasks)
     # --- 2 EDF Evaluation. ---
-    elif ischeme == 'EL EDF':  # RI scheduling
-        RI.set_prio(tasks, prio_policy=3)
-        RI.RI_fixed(tasks, depth=RI_depth)
+    elif ischeme == 'EL EDF':  # EL scheduling
+        EL.set_prio(tasks, prio_policy=3)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'Our EMSoft':  # Our EMSoft
         RTEDF.RTEDF(tasks)
     elif ischeme == 'Dong and Liu':
@@ -97,35 +97,35 @@ def timing(ischeme, tasks, RI_depth=None, RI_max_a=None):
         SCEDF.SC_EDF(tasks)
     # --- 3 EQDF Evaluation. ---
     elif ischeme == 'EL EQDF lam=0':
-        RI.set_prio(tasks, prio_policy=101, lam=0)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=101, lam=0)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL EQDF lam=-1':
-        RI.set_prio(tasks, prio_policy=101, lam=-1)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=101, lam=-1)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL EQDF lam=+1':
-        RI.set_prio(tasks, prio_policy=101, lam=+1)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=101, lam=+1)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL EQDF any lam in [-10,10]':
         for lam in [0] + list(range(-10, 11, 1)):  # lam range
             # (Testing 0 first gives results faster.)
-            RI.set_prio(tasks, prio_policy=101, lam=lam)
-            if RI.RI_fixed(tasks, depth=RI_depth) is True:
+            EL.set_prio(tasks, prio_policy=101, lam=lam)
+            if EL.EL_fixed(tasks, depth=EL_depth) is True:
                 break
     # --- 4 SAEDF Evaluation. ---
     elif ischeme == 'EL SAEDF lam=0':
-        RI.set_prio(tasks, prio_policy=201, lam=0)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=201, lam=0)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL SAEDF lam=-1':
-        RI.set_prio(tasks, prio_policy=201, lam=-1)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=201, lam=-1)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL SAEDF lam=+1':
-        RI.set_prio(tasks, prio_policy=201, lam=+1)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=201, lam=+1)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL SAEDF any lam in [-10,10]':
         for lam in [0] + list(range(-10, 11, 1)):  # lam range
             # (Testing 0 first gives results faster.)
-            RI.set_prio(tasks, prio_policy=201, lam=lam)
-            if RI.RI_fixed(tasks, depth=RI_depth) is True:
+            EL.set_prio(tasks, prio_policy=201, lam=lam)
+            if EL.EL_fixed(tasks, depth=EL_depth) is True:
                 break
     # --- 5a Arb deadline DM Evaluation. ---
     elif ischeme == 'EL-fix DM D1.0':
@@ -133,96 +133,96 @@ def timing(ischeme, tasks, RI_depth=None, RI_max_a=None):
         for itask in tasks:
             itask['deadline'] = 1.0 * itask['period']
         # Set priorities.
-        RI.set_prio(tasks, prio_policy=2)
+        EL.set_prio(tasks, prio_policy=2)
         # Sched test.
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL-fix DM D1.1':
         for itask in tasks:
             itask['deadline'] = 1.1 * itask['period']
-        RI.set_prio(tasks, prio_policy=2)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=2)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL-fix DM D1.2':
         for itask in tasks:
             itask['deadline'] = 1.2 * itask['period']
-        RI.set_prio(tasks, prio_policy=2)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=2)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL-fix DM D1.5':
         for itask in tasks:
             itask['deadline'] = 1.5 * itask['period']
-        RI.set_prio(tasks, prio_policy=2)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=2)
+        EL.EL_fixed(tasks, depth=EL_depth)
     # --- 5b Arb deadline DM Evaluation. ---
     elif ischeme == 'EL-var DM D1.0':
         # Set Deadlines.
         for itask in tasks:
             itask['deadline'] = 1.0 * itask['period']
         # Set priorities.
-        RI.set_prio(tasks, prio_policy=2)
+        EL.set_prio(tasks, prio_policy=2)
         # Sched test.
-        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
+        EL.EL_var(tasks, depth=EL_depth, max_a=EL_max_a)
     elif ischeme == 'EL-var DM D1.1':
         for itask in tasks:
             itask['deadline'] = 1.1 * itask['period']
-        RI.set_prio(tasks, prio_policy=2)
-        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
+        EL.set_prio(tasks, prio_policy=2)
+        EL.EL_var(tasks, depth=EL_depth, max_a=EL_max_a)
     elif ischeme == 'EL-var DM D1.2':
         for itask in tasks:
             itask['deadline'] = 1.2 * itask['period']
-        RI.set_prio(tasks, prio_policy=2)
-        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
+        EL.set_prio(tasks, prio_policy=2)
+        EL.EL_var(tasks, depth=EL_depth, max_a=EL_max_a)
     elif ischeme == 'EL-var DM D1.5':
         for itask in tasks:
             itask['deadline'] = 1.5 * itask['period']
-        RI.set_prio(tasks, prio_policy=2)
-        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
+        EL.set_prio(tasks, prio_policy=2)
+        EL.EL_var(tasks, depth=EL_depth, max_a=EL_max_a)
     # --- 6a Arb deadline EDF Evaluation. ---
     elif ischeme == 'EL-fix EDF D1.0':
         # Set Deadlines.
         for itask in tasks:
             itask['deadline'] = 1.0 * itask['period']
         # Set priorities.
-        RI.set_prio(tasks, prio_policy=3)
+        EL.set_prio(tasks, prio_policy=3)
         # Sched test.
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL-fix EDF D1.1':
         for itask in tasks:
             itask['deadline'] = 1.1 * itask['period']
-        RI.set_prio(tasks, prio_policy=3)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=3)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL-fix EDF D1.2':
         for itask in tasks:
             itask['deadline'] = 1.2 * itask['period']
-        RI.set_prio(tasks, prio_policy=3)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=3)
+        EL.EL_fixed(tasks, depth=EL_depth)
     elif ischeme == 'EL-fix EDF D1.5':
         for itask in tasks:
             itask['deadline'] = 1.5 * itask['period']
-        RI.set_prio(tasks, prio_policy=3)
-        RI.RI_fixed(tasks, depth=RI_depth)
+        EL.set_prio(tasks, prio_policy=3)
+        EL.EL_fixed(tasks, depth=EL_depth)
     # --- 6b Arb deadline EDF Evaluation. ---
     elif ischeme == 'EL-var EDF D1.0':
         # Set Deadlines.
         for itask in tasks:
             itask['deadline'] = 1.0 * itask['period']
         # Set priorities.
-        RI.set_prio(tasks, prio_policy=3)
+        EL.set_prio(tasks, prio_policy=3)
         # Sched test.
-        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
+        EL.EL_var(tasks, depth=EL_depth, max_a=EL_max_a)
     elif ischeme == 'EL-var EDF D1.1':
         for itask in tasks:
             itask['deadline'] = 1.1 * itask['period']
-        RI.set_prio(tasks, prio_policy=3)
-        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
+        EL.set_prio(tasks, prio_policy=3)
+        EL.EL_var(tasks, depth=EL_depth, max_a=EL_max_a)
     elif ischeme == 'EL-var EDF D1.2':
         for itask in tasks:
             itask['deadline'] = 1.2 * itask['period']
-        RI.set_prio(tasks, prio_policy=3)
-        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
+        EL.set_prio(tasks, prio_policy=3)
+        EL.EL_var(tasks, depth=EL_depth, max_a=EL_max_a)
     elif ischeme == 'EL-var EDF D1.5':
         for itask in tasks:
             itask['deadline'] = 1.5 * itask['period']
-        RI.set_prio(tasks, prio_policy=3)
-        RI.RI_var(tasks, depth=RI_depth, max_a=RI_max_a)
+        EL.set_prio(tasks, prio_policy=3)
+        EL.EL_var(tasks, depth=EL_depth, max_a=EL_max_a)
     # --- Else. ---
     else:
         raise ValueError(f"{ischeme=} is not valid.")
@@ -276,8 +276,8 @@ if __name__ == '__main__':
 
         Ncol = 3  # number of columns in Legend
 
-        RI_depth = 2  # depth for EL schedulability test
-        RI_max_a = 2  # maximal a for EL schedulability test
+        EL_depth = 2  # depth for EL schedulability test
+        EL_max_a = 2  # maximal a for EL schedulability test
 
         num_processors = 6  # number of processors for the evaluation
     else:  # Full evaluation.
@@ -300,8 +300,8 @@ if __name__ == '__main__':
 
         Ncol = 3  # number of columns in Legend
 
-        RI_depth = 5  # depth for EL schedulability test
-        RI_max_a = 10  # maximal a for EL schedulability test
+        EL_depth = 5  # depth for EL schedulability test
+        EL_max_a = 10  # maximal a for EL schedulability test
 
         num_processors = 100  # number of processors for the evaluation
 
@@ -334,7 +334,7 @@ if __name__ == '__main__':
         tasksets_difutil = create_tasksets(number_tasks)
         # Do the tests + measure the runtime.
         for ischeme in gSchemes:
-            runtimes = runtime_eval(ischeme, tasksets_difutil, num_processors, RI_depth=RI_depth, RI_max_a=RI_max_a)
+            runtimes = runtime_eval(ischeme, tasksets_difutil, num_processors, EL_depth=EL_depth, EL_max_a=EL_max_a)
             store_results(ischeme, number_tasks, runtimes)
 
     ###
