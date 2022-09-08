@@ -125,70 +125,65 @@ if __name__ == '__main__':
                         help="Run only a small configuration to test that the program runs. Otherwise, the full evaluation is performed.")
     parser.add_argument("-p", "--processes", dest="proc", type=int,
                         help="Specify the number of concurrent processes.")
-    parser.add_argument("scheme", help="Choose a scheme flag option from: [401. 402]")
+    parser.add_argument("scheme", help="Choose a scheme flag option from: [1, 2]")
     args = vars(parser.parse_args())
 
-    # Settings
-    gTotBucket = 200  # total number of task sets per utilization
-    gTasksinBkt = 50  # tasks per set
+    ###
+    # Global variables
+    ###
+    if args["quick"]:  # Quick setting to check if the program runs completely without Error.
+        gTotBucket = 10  # total number of task sets per utilization
+        gTasksinBkt = 10  # tasks per set
 
-    gUStart = 0  # utilization start
-    gUEnd = 100  # utilization end
-    gUStep = 5  # utilization step
+        gUStart = 0  # utilization start
+        gUEnd = 100  # utilization end
+        gUStep = 50  # utilization step
+
+        gMultiproc = 6  # number of concurrent threads
+
+    else:  # Full evaluation.
+        gTotBucket = 200  # total number of task sets per utilization
+        gTasksinBkt = 50  # tasks per set
+
+        gUStart = 0  # utilization start
+        gUEnd = 100  # utilization end
+        gUStep = 5  # utilization step
+
+        gMultiproc = 100  # number of concurrent threads
 
     # Share from period - wcet for self-suspension:
-    gMaxsstype = 0.5  # maximal total self-suspension length
-    gMinsstype = 0.0  # minimal total self-suspension length
+    gMaxsstype = 0.5  # maximal total self-suspension length # TODO 0.3?
+    gMinsstype = 0.0  # minimal total self-suspension length # TODO 0.1?
 
     gSSofftypes = 0  # number of segments does not matter
 
-    deadline_stretch = [0.8, 1.2]
-
+    # Further plotting preferences.
     Ncol = 3  # number of columns in Legend
-    datapath = 'data'
-    plotpath = 'plot'
-    plotname = ' '  # name for plots, to be changed when choosing schedulability tests
-
-    gMultiproc = 100  # number of concurrent threads
-
-    #####
-    # === Try-out settings: ===
-    gTotBucket = 10
-    gTasksinBkt = 10
-    gMultiproc = 0
-
-    gUStart = 0  # utilization start
-    gUEnd = 100  # utilization end
-    gUStep = 50  # utilization step
-    gMultiproc = 6  # number of concurrent threads
-    #####
+    datapath = 'effsstsPlot/Data/Comparison'
+    plotpath = 'effsstsPlot/Data'
+    plotname = ''  # name for plots, to be changed when choosing schedulability tests
 
     # Choose schedulability tests
     scheme_flag = args["scheme"]
 
-    # ==Show that Heuristic is useful==
-    ##### Comparison #####
-    if scheme_flag == '401':
+    ###
+    # Choose schedulability tests to be run + assign corresponding gSchemes and plotallname:
+    ###
+    if scheme_flag == '1':
         gSchemes = ['FP', 'EL-fixed', 'EL-var']
-        plotname = '401'
-        gTotBucket = 200  # total number of task sets per utilization
-        gMaxsstype = 0.3  # maximal total self-suspension length
-        gMinsstype = 0.1  # minimal total self-suspension length
+        plotname = 'comparison_arb_DL_FP_1.0-1.2'
         deadline_stretch = [1.0, 1.2]
-    elif scheme_flag == '402':
+    elif scheme_flag == '2':
         gSchemes = ['FP', 'EL-fixed', 'EL-var']
-        plotname = '402'
-        gTotBucket = 200  # total number of task sets per utilization
-        gMaxsstype = 0.3  # maximal total self-suspension length
-        gMinsstype = 0.1  # minimal total self-suspension length
+        plotname = 'comparison_arb_DL_FP_0.8-1.2'
         deadline_stretch = [0.8, 1.2]
 
-    # == ELSE ==
     else:
-        print('second input argument not valid')
-        quit()
+        raise ValueError(f'{scheme_flag=} is no valid argument.')
 
-    # Create task sets
+    ###
+    # Create Task sets
+    ###
     tasksets_difutil = create_tasksets(
         gUStart, gUEnd, gUStep, gTasksinBkt, gTotBucket, gMinsstype, gMaxsstype)
 
@@ -205,7 +200,9 @@ if __name__ == '__main__':
         for tskset in tsksets:
             tskset.sort(key=lambda x: x['deadline'])
 
-    # Schedulability test + store results
+    ###
+    # Schedulability tests
+    ###
     for gScheme in gSchemes:
         # test
         results = list(zip(itertools.count(start=gUStart, step=gUStep),
@@ -214,7 +211,9 @@ if __name__ == '__main__':
         # store results
         store_results(results, datapath, gScheme + '.npy')
 
-    # plot results
+    ###
+    # Plot.
+    ###
     results_plot = [load_results(datapath, gScheme + '.npy')
                     for gScheme in gSchemes]
 

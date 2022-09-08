@@ -21,3 +21,7 @@ python3 main.py "-p$processes" 6b
 
 # Run runtime evaluation
 python3 runtime.py "-p$processes" 1
+
+# Run comparison with arbitrary DL FP analysis
+python3 comparison.py "-p$processes" 1
+python3 comparison.py "-p$processes" 2

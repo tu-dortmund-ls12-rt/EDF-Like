@@ -298,7 +298,6 @@ if __name__ == '__main__':
     ###
     # Choose schedulability tests to be run + assign corresponding gSchemes and plotallname:
     ###
-
     plotallname = ''
     if scheme_flag == '1':
         # 1 DM Evaluation.
