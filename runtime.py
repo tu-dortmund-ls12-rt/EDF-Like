@@ -227,7 +227,7 @@ def timing(ischeme, tasks, EL_depth=None, EL_max_a=None):
 
 def store_results(ischeme, number_tasks, runtimes):
     """Store the results."""
-    plotPath = (gPrefixdata)
+    plotPath = (gPrefixdata + '/Runtime/')
     plotfile = (gPrefixdata + '/Runtime/' + ischeme + str(number_tasks) + '_runtime')
 
     # Store results
