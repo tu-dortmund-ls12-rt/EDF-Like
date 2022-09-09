@@ -1,22 +1,23 @@
-from argparse import ArgumentParser
+#!/usr/bin/env python3
+"""This file is to evaluate the comparison with GUC21."""
 
-from schedTest import GUC21
-from schedTest import EL
-from schedTest import tgPath as create
+from schedTest import tgPath as create  # Task generation from SSSEvaluation
+from schedTest import GUC21  # GUC21 analysis
+from schedTest import EL  # Our analysis
+from effsstsPlot import effsstsPlot as plot  # Plot function from SSSEvaluation
 
+# Other packages
 import numpy as np
 import os
 import random
+from multiprocessing import Pool
 import itertools
 from itertools import repeat
-from multiprocessing import Pool
-
-from effsstsPlot import effsstsPlot as plot
-
-random.seed(331)  # set seed to have same task sets for each plot
+from argparse import ArgumentParser
 
 
 def store_results(results, path, filename):
+    """Store results in path/filename."""
     file = os.path.join(path, filename)
     if not os.path.exists(path):
         os.makedirs(path)
@@ -24,6 +25,7 @@ def store_results(results, path, filename):
 
 
 def load_results(path, filename):
+    """Load results from path/filename."""
     file = os.path.join(path, filename)
     results = np.load(file, allow_pickle=True)
     return results
@@ -79,41 +81,20 @@ def test_scheme(gScheme, tasksets_difutil, multiproc=0):
 
 
 def _test_scheme(gScheme, taskset):
-    # Choose correct scheme
-    if gScheme == 'FP':  # this is used
+    """Choose the correct schedulability test for gScheme."""
+    if gScheme == 'GUC21':  # this is used
         # set arrival curves
         arr_curves = [GUC21.arr_sporadic(task['period']) for task in taskset]
         # do test
         return GUC21.sched_test(taskset, arr_curves, choose_xvec='comb3')
-
     elif gScheme == 'EL-fixed':
         EL.set_prio(taskset, prio_policy=2)
         return EL.EL_fixed(taskset)
     elif gScheme == 'EL-var':
         EL.set_prio(taskset, prio_policy=2)
-        return EL.EL_var(taskset, max_a=10)
-
+        return EL.EL_var(taskset, max_a=10, depth=5)
     else:
-        return False
-
-
-def _set_deadlines(taskset, param):
-    for tsk in taskset:
-        tsk['deadline'] = tsk['period'] * param
-
-
-def _make_jitter_tasks(taskset, jit):
-    tasksetJ = [dict(tsk) for tsk in taskset]
-    for tsk in tasksetJ:
-        tsk['period'] *= (1 - jit)
-    return tasksetJ
-
-
-def _constrained_tasks(taskset):
-    tasksetJ = [dict(tsk) for tsk in taskset]
-    for tsk in tasksetJ:
-        tsk['deadline'] = min(tsk['deadline'], tsk['period'])
-    return tasksetJ
+        raise ValueError(f"There is no schedulability test for {gScheme=}.")
 
 
 if __name__ == '__main__':
@@ -142,7 +123,7 @@ if __name__ == '__main__':
         gMultiproc = 6  # number of concurrent threads
 
     else:  # Full evaluation.
-        gTotBucket = 200  # total number of task sets per utilization
+        gTotBucket = 500  # total number of task sets per utilization
         gTasksinBkt = 50  # tasks per set
 
         gUStart = 0  # utilization start
@@ -151,9 +132,9 @@ if __name__ == '__main__':
 
         gMultiproc = 100  # number of concurrent threads
 
-    # Share from period - wcet for self-suspension:
-    gMaxsstype = 0.5  # maximal total self-suspension length # TODO 0.3?
-    gMinsstype = 0.0  # minimal total self-suspension length # TODO 0.1?
+    # Share from (period - wcet) for self-suspension:
+    gMaxsstype = 0.5  # maximal total self-suspension length
+    gMinsstype = 0.0  # minimal total self-suspension length
 
     gSSofftypes = 0  # number of segments does not matter
 
@@ -170,12 +151,12 @@ if __name__ == '__main__':
     # Choose schedulability tests to be run + assign corresponding gSchemes and plotallname:
     ###
     if scheme_flag == '1':
-        gSchemes = ['FP', 'EL-fixed', 'EL-var']
-        plotname = 'comparison_arb_DL_FP_1.0-1.2'
+        gSchemes = ['GUC21', 'EL-fixed', 'EL-var']
+        plotname = 'comparison_arb_DL_GUC21_1.0-1.2'
         deadline_stretch = [1.0, 1.2]
     elif scheme_flag == '2':
-        gSchemes = ['FP', 'EL-fixed', 'EL-var']
-        plotname = 'comparison_arb_DL_FP_0.8-1.2'
+        gSchemes = ['GUC21', 'EL-fixed', 'EL-var']
+        plotname = 'comparison_arb_DL_GUC21_0.8-1.2'
         deadline_stretch = [0.8, 1.2]
 
     else:
@@ -184,6 +165,8 @@ if __name__ == '__main__':
     ###
     # Create Task sets
     ###
+    random.seed(331)  # set seed to have same task sets for each plot
+
     tasksets_difutil = create_tasksets(
         gUStart, gUEnd, gUStep, gTasksinBkt, gTotBucket, gMinsstype, gMaxsstype)
 
@@ -204,17 +187,16 @@ if __name__ == '__main__':
     # Schedulability tests
     ###
     for gScheme in gSchemes:
-        # test
+        # Test.
         results = list(zip(itertools.count(start=gUStart, step=gUStep),
                            test_scheme(gScheme, tasksets_difutil, multiproc=gMultiproc)))
         print(list(results))
-        # store results
+        # Store results.
         store_results(results, datapath, gScheme + '.npy')
 
     ###
-    # Plot.
+    # Plot
     ###
-    results_plot = [load_results(datapath, gScheme + '.npy')
-                    for gScheme in gSchemes]
+    results_plot = [load_results(datapath, gScheme + '.npy') for gScheme in gSchemes]
 
     plot.plot_comparison(gSchemes, results_plot, plotpath, plotname, Ncol)

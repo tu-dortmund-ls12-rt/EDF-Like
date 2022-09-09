@@ -6,6 +6,7 @@ from schedTest import RTEDF, UDLEDF, SCEDF, WLAEDF, UniFramework, FP_Analyses  #
 from schedTest import EL  # Our analysis
 from effsstsPlot import effsstsPlot  # Plot function from SSSEvaluation
 
+# Other packages
 import numpy as np
 import os
 import random
@@ -14,12 +15,10 @@ from itertools import repeat
 from argparse import ArgumentParser
 
 
-# Help function to plot results.
 def plot_results(
         gPrefixdata, gSchemes, gMinsstype, gMaxsstype,
         gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol, plotallname):
-    """ Plot the results.
-    """
+    """ Plot the results."""
     effsstsPlot.effsstsPlotAll(
         gPrefixdata, True, gSchemes, gMinsstype, gMaxsstype,
         gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol=Ncol,
@@ -221,9 +220,8 @@ def check(ischeme, tasks, EL_depth=None, EL_max_a=None):
         EL.set_prio(tasks, prio_policy=3)
         if EL.EL_var(tasks, depth=EL_depth, max_a=EL_max_a) is False:
             numfail += 1
-    # --- Else. ---
     else:
-        raise ValueError(f"{ischeme=} is not valid.")
+        raise ValueError(f"{ischeme=} is not a valid option.")
 
     return numfail
 
@@ -251,14 +249,6 @@ if __name__ == '__main__':
         gUStart = 0  # utilization start
         gUEnd = 100  # utilization end
 
-        # Share from period - wcet for self-suspension:
-        gMaxsstype = 0.5  # maximal total self-suspension length
-        gMinsstype = 0.0  # minimal total self-suspension length
-
-        gSSofftypes = 0  # number of segments does not matter
-
-        Ncol = 3  # number of columns in Legend
-
         EL_depth = 2  # depth for EL schedulability test
         EL_max_a = 2  # maximal a for EL schedulability test
 
@@ -272,18 +262,18 @@ if __name__ == '__main__':
         gUStart = 0  # utilization start
         gUEnd = 100  # utilization end
 
-        # Share from period - wcet for self-suspension:
-        gMaxsstype = 0.5  # maximal total self-suspension length
-        gMinsstype = 0.0  # minimal total self-suspension length
-
-        gSSofftypes = 0  # number of segments does not matter
-
-        Ncol = 3  # number of columns in Legend
-
         EL_depth = 5  # depth for EL schedulability test
         EL_max_a = 10  # maximal a for EL schedulability test
 
         num_processors = 100  # number of processors for the evaluation
+
+    # Share from (period - wcet) for self-suspension:
+    gMaxsstype = 0.5  # maximal total self-suspension length
+    gMinsstype = 0.0  # minimal total self-suspension length
+
+    gSSofftypes = 0  # number of segments does not matter
+
+    Ncol = 3  # number of columns in Legend
 
     # Further plotting preferences.
     gPrefixdata = "effsstsPlot/Data"  # path to store data
@@ -419,7 +409,7 @@ if __name__ == '__main__':
         np.save(plotfile, np.array([x, y]))
 
     ###
-    # Plot.
+    # Plot
     ###
     plot_results(gPrefixdata, gSchemes, gMinsstype, gMaxsstype, gSSofftypes, gUStart, gUEnd, gUStep, gTasksinBkt, Ncol,
                  plotallname)

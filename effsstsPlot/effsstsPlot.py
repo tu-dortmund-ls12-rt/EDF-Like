@@ -56,6 +56,7 @@ def pickColor(ischeme):
         color = '#99ff99'
     elif ischeme in [
         'EL-fix DM D1.1', 'EL-var DM D1.1',
+        'EL-fix'
     ]:
         color = '#00e600'
     elif ischeme in [
@@ -71,7 +72,8 @@ def pickColor(ischeme):
     ]:
         color = '#ff9980'
     elif ischeme in [
-        'EL-fix EDF D1.1', 'EL-var EDF D1.1'
+        'EL-fix EDF D1.1', 'EL-var EDF D1.1',
+        'EL-var'
     ]:
         color = '#ff3300'
     elif ischeme in [
@@ -79,7 +81,8 @@ def pickColor(ischeme):
     ]:
         color = '#b32400'
     elif ischeme in [
-        'EL-fix EDF D1.5', 'EL-var EDF D1.5'
+        'EL-fix EDF D1.5', 'EL-var EDF D1.5',
+        'GUC21'
     ]:
         color = '#000000'
     else:  # --- Other: Randomly.
@@ -96,7 +99,8 @@ def pickMarker(ischeme):  # TODO adjust
         'EL EQDF any lam in [-10,10]',
         'EL SAEDF any lam in [-10,10]',
         'EL-fix DM D1.5', 'EL-var DM D1.5',
-        'EL-fix EDF D1.5', 'EL-var EDF D1.5'
+        'EL-fix EDF D1.5', 'EL-var EDF D1.5',
+        'GUC21'
     ]:
         marker = 'o'
     elif ischeme in [
@@ -114,7 +118,8 @@ def pickMarker(ischeme):  # TODO adjust
         'EL EQDF lam=+1',
         'EL SAEDF lam=+1',
         'EL-fix DM D1.2', 'EL-var DM D1.2',
-        'EL-fix EDF D1.2', 'EL-var EDF D1.2'
+        'EL-fix EDF D1.2', 'EL-var EDF D1.2',
+        'EL-fix'
     ]:
         marker = '>'
     elif ischeme in [
@@ -123,7 +128,8 @@ def pickMarker(ischeme):  # TODO adjust
         'EL EQDF lam=-1',
         'EL SAEDF lam=-1',
         'EL-fix DM D1.0', 'EL-var DM D1.0',
-        'EL-fix EDF D1.0', 'EL-var EDF D1.0'
+        'EL-fix EDF D1.0', 'EL-var EDF D1.0',
+        'EL-var'
     ]:
         marker = '<'
     elif ischeme in [

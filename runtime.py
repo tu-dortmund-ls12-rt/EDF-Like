@@ -1,29 +1,26 @@
 #!/usr/bin/env python3
-"""This is file is to evaluate the runtime of our approach."""
+"""This file is to evaluate the runtime of our approach."""
 
 from schedTest import tgPath  # Task generation from SSSEvaluation
 from schedTest import RTEDF, UDLEDF, SCEDF, WLAEDF, UniFramework, FP_Analyses  # Analyses from SSSEvaluation
 from schedTest import EL  # Our analysis
 from effsstsPlot import effsstsPlot  # Plot function from SSSEvaluation
 
-# other packages
+# Other packages
 import numpy as np
 import os
 import random
-import time
-from itertools import repeat
 from multiprocessing import Pool  # multiprocessing
+from itertools import repeat
 from argparse import ArgumentParser
+import time
 
 
 def create_tasksets(number_tasks):
-    ###
-    # Create Task sets
-    ###
+    """Create tasksets."""
     random.seed(331)  # same task sets for each plot
 
     tasksets_difutil = []  # task set differentiated by utilization
-
     for u in range(gUStart, gUEnd, gUStep):
         tasksets = []
         for i in range(0, gTotBucket, 1):
@@ -45,14 +42,13 @@ def create_tasksets(number_tasks):
 
 
 def runtime_eval(ischeme, tasksets_difutil, num_processors, EL_depth=None, EL_max_a=None):
+    """Evaluate the runtime."""
     x = np.arange(gUStart, gUEnd + 1, gUStep)
     print(x)
     y = np.zeros(int((gUEnd - gUStart) / gUStep) + 1)
     print(y)
 
     runtimes = []  # runtimes
-
-    ifskip = False  # skip flag when 0 is reached
 
     # Iterate through taskset.
     for u, tasksets in enumerate(tasksets_difutil, start=0):
@@ -223,15 +219,14 @@ def timing(ischeme, tasks, EL_depth=None, EL_max_a=None):
             itask['deadline'] = 1.5 * itask['period']
         EL.set_prio(tasks, prio_policy=3)
         EL.EL_var(tasks, depth=EL_depth, max_a=EL_max_a)
-    # --- Else. ---
     else:
-        raise ValueError(f"{ischeme=} is not valid.")
+        raise ValueError(f"{ischeme=} is no valid argument.")
 
     return time.time() - start
 
 
 def store_results(ischeme, number_tasks, runtimes):
-    # breakpoint()
+    """Store the results."""
     plotPath = (gPrefixdata)
     plotfile = (gPrefixdata + '/Runtime/' + ischeme + str(number_tasks) + '_runtime')
 
@@ -268,14 +263,6 @@ if __name__ == '__main__':
         gUStart = 0  # utilization start
         gUEnd = 100  # utilization end
 
-        # Share from period - wcet for self-suspension:
-        gMaxsstype = 0.5  # maximal total self-suspension length
-        gMinsstype = 0.0  # minimal total self-suspension length
-
-        gSSofftypes = 0  # number of segments does not matter
-
-        Ncol = 3  # number of columns in Legend
-
         EL_depth = 2  # depth for EL schedulability test
         EL_max_a = 2  # maximal a for EL schedulability test
 
@@ -293,18 +280,18 @@ if __name__ == '__main__':
         gUStart = 0  # utilization start
         gUEnd = 100  # utilization end
 
-        # Share from period - wcet for self-suspension:
-        gMaxsstype = 0.5  # maximal total self-suspension length
-        gMinsstype = 0.0  # minimal total self-suspension length
-
-        gSSofftypes = 0  # number of segments does not matter
-
-        Ncol = 3  # number of columns in Legend
-
         EL_depth = 5  # depth for EL schedulability test
         EL_max_a = 10  # maximal a for EL schedulability test
 
         num_processors = 100  # number of processors for the evaluation
+
+    # Share from (period - wcet) for self-suspension:
+    gMaxsstype = 0.5  # maximal total self-suspension length
+    gMinsstype = 0.0  # minimal total self-suspension length
+
+    gSSofftypes = 0  # number of segments does not matter
+
+    Ncol = 3  # number of columns in Legend
 
     # Further plotting preferences
     gPrefixdata = "effsstsPlot/Data"  # path to store data
