@@ -1,6 +1,5 @@
 TODO:
 
-- troubleshooting: maximum number of processes may be limited by the operating system.
 - copy to private repo and remove branch "tuning"
 
 # EDF-Like Scheduling Schedulability Evaluation
@@ -98,51 +97,56 @@ chmod 777 auto_quick.sh
 - To reproduce the evaluation from the RTSS paper, ```auto_full.sh``` can be executed (run ```./auto_full.sh```)
 - The plotted figures can be found in the folder ```effsstsPlot/Data```:
 
-| Paper figure    | Plot in effsstsPlot/Data |
-|-----------------|--------------------------|
-| Fig. 5(a)       | 1_dm.pdf                 |
-| Fig. 5(b)       | 2_edf.pdf                |
-| Fig. 6(a)       | 3_eqdf.pdf               |
-| Fig. 6(b)       | 4_saedf.pdf              |
-| Fig. 7(a)       | 5a_arb_dl_dm.pdf         |
-| Fig. 7(b)       | 5b_arb_dl_dm.pdf         |
-| Fig. 8(a)       | 6a_arb_dl_edf.pdf        |
-| Fig. 8(b)       | 6b_arb_dl_edf.pdf        |
-| Fig. 9(a)       |                          |
-| Fig. 9(b)       |                          |
-| (not presented) | runtime_eval_1_avg.pdf   |
-| (not presented) | runtime_eval_1_avg.pdf   |
+| Paper figure    | Plot in effsstsPlot/Data            |
+|-----------------|-------------------------------------|
+| Fig. 5(a)       | 1_dm.pdf                            |
+| Fig. 5(b)       | 2_edf.pdf                           |
+| Fig. 6(a)       | 3_eqdf.pdf                          |
+| Fig. 6(b)       | 4_saedf.pdf                         |
+| Fig. 7(a)       | 5a_arb_dl_dm.pdf                    |
+| Fig. 7(b)       | 5b_arb_dl_dm.pdf                    |
+| Fig. 8(a)       | 6a_arb_dl_edf.pdf                   |
+| Fig. 8(b)       | 6b_arb_dl_edf.pdf                   |
+| Fig. 9(a)       | comparison_arb_DL_GUC21_0.8-1.2.pdf |
+| Fig. 9(b)       | comparison_arb_DL_GUC21_1.0-1.2.pdf |
+| (not presented) | runtime_eval_1_avg.pdf              |
+| (not presented) | runtime_eval_1_avg.pdf              |
 
-TODO: CONTINUE ===================================================================
+To speed up the evaluation, the multiprocessing package is utilized which generates several concurrent processes to run
+the schedulability tests. For the quick evaluation there are 6 concurrent processes, while for the full evaluation there
+are 100 concurrent processes. The number of concurrent processes can be modified by passing the desired number to the
+bash script, i.e.,
+``./auto_quick.sh <number processes>`` or ``./auto_full.sh <number processes>``. Please note that the maximum number of
+processes may be limited by the operating system. Hence, if you receive an error
+like ``OSError: [Errno 24] Too many open files`` please try to reduce the number of processes.
 
-As a reference, we utilize a machine running Archlinux 5.17.3-arch1-1 x86_64 GNU/Linux,with i7-10610U CPU and 16 GB main
-memory. It takes about 170 seconds with this machine to obtain these two figures, when set ```num_processors = 5```
-in ```main.py```
+As a reference, we utilize a machine running Debian 4.19.98-1 (2020-01-26) x86_64 GNU/Linux, with 2 x AMD EPYC 7742
+64-Core Processor (64 Cores, 128 Threads), i.e., in total 256 Threads with 2,25GHz and 256GB RAM.
+Running ```./auto_full.sh``` (i.e., with 100 processes) takes about 1 hour with this machine. TODO: Update
 
 ## Overview of the corresponding functions
 
-The following tables describe the mapping between content of our paper and the source code in this repository.
+The following table describes the mapping between content of our paper and the source code in this repository.
 
-**Section 4.1** (RTC-based analysis):
-On Paper | Source code --- | --- Theorem 4 | rtc_cb.wcrt_analysis_single()
-
-**Section 4.2** (Our Analysis for Sporadic Tasks):
-On Paper | Source code --- | --- Theorem 7 | our_analysis.wcrt_analysis_single()
+| On Paper   | Pseudocode  | Source Code in folder schedTest: |
+|------------|-------------|----------------------------------|
+| Theorem 12 | Algorithm 1 | EL.EL_fixed                      |
+| Theorem 15 | Algorithm 2 | EL.EL_var                        |
 
 ## Miscellaneous
 
 ### Authors
 
-* Kuan-Hsun Chen (University of Twente)
 * Mario Günzel (TU Dortmund University)
-* Boguslaw Jablkowski (EMVICORE GmbH)
-* Markus Buschhoff (EMVICORE GmbH)
+* Georg von der Brüggen (TU Dortmund University)
+* Kuan-Hsun Chen (University of Twente)
 * Jian-Jia Chen (TU Dortmund University)
 
 ### Acknowledgments
 
-This work has been supported by European Research Council (ERC) Consolidator Award 2019, as part of PropRT (Number
-865170), and by Deutsche Forschungsgemeinschaft (DFG), as part of Sus-Aware (Project no. 398602212).
+This work has been supported by Deutsche Forschungsgemeinschaft (DFG), as part of Sus-Aware (Project No. 398602212).
+This result is part of a project (PropRT) that has received funding from the European Research Council (ERC) under the
+European Union’s Horizon 2020 research and innovation programme (grant agreement No. 865170).
 
 ### License
 
