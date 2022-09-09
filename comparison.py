@@ -87,7 +87,7 @@ def _test_scheme(gScheme, taskset):
         arr_curves = [GUC21.arr_sporadic(task['period']) for task in taskset]
         # do test
         return GUC21.sched_test(taskset, arr_curves, choose_xvec='comb3')
-    elif gScheme == 'EL-fixed':
+    elif gScheme == 'EL-fix':
         EL.set_prio(taskset, prio_policy=2)
         return EL.EL_fixed(taskset)
     elif gScheme == 'EL-var':
@@ -151,11 +151,11 @@ if __name__ == '__main__':
     # Choose schedulability tests to be run + assign corresponding gSchemes and plotallname:
     ###
     if scheme_flag == '1':
-        gSchemes = ['GUC21', 'EL-fixed', 'EL-var']
+        gSchemes = ['GUC21', 'EL-fix', 'EL-var']
         plotname = 'comparison_arb_DL_GUC21_1.0-1.2'
         deadline_stretch = [1.0, 1.2]
     elif scheme_flag == '2':
-        gSchemes = ['GUC21', 'EL-fixed', 'EL-var']
+        gSchemes = ['GUC21', 'EL-fix', 'EL-var']
         plotname = 'comparison_arb_DL_GUC21_0.8-1.2'
         deadline_stretch = [0.8, 1.2]
 
