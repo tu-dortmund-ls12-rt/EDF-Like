@@ -5,9 +5,6 @@ https://github.com/tu-dortmund-ls12-rt/SSSEvaluation/blob/master/schedTest/tgPat
 from __future__ import division
 import random
 import math
-import sys, getopt
-import json
-import datetime
 
 USet = []
 PSet = []
@@ -35,21 +32,6 @@ def UUniFast_Discard(n, U_avg):
         if max(USet) < 1:
             break
         del USet[:]
-
-
-# def ExpDist(limit, U_mean):
-#     while 1:
-#         uBkt = random.expovariate(U_mean)
-#         print(uBkt)
-#         if sum(taskSet) + uBkt > limit:
-#             break
-#         taskSet.append(uBkt)
-#
-#
-# def UniDist(n, U_min, U_max):
-#     for i in range(n - 1):
-#         uBkt = random.uniform(U_min, U_max)
-#         taskSet.append(uBkt)
 
 
 def CSet_generate(Pmin, numLog):
