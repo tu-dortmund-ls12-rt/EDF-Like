@@ -26,22 +26,20 @@ The rest of the document is organized as follows:
 To run the evaluation [Python3.10](https://www.python.org/downloads/release/python-3100/) has to be installed on the
 machine.
 (Older versions of Python3 might work as well.)
-Moreover, the following Python packages are required: TODO: Update
+Moreover, the following Python packages are required:
 
 ```
-matplotlib~=3.5.3
-numpy~=1.23.2
+matplotlib
+numpy
 ```
 
-Assuming that Python 3.10 is installed in the targeted machine, to install the required packages:
+Assuming that Python 3 is installed in the targeted machine, to install the required packages:
 
 ```
-python3.10 -m pip install matplotlib numpy
+python3 -m pip install matplotlib numpy
 ```
 
 In case any dependent packages are missing, please install them accordingly.
-
-TODO: CONTINUE HERE =====
 
 ## File Structure
 
@@ -146,5 +144,4 @@ European Union’s Horizon 2020 research and innovation programme (grant agreeme
 
 ### License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details. # TODO: add license
-file
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
