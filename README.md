@@ -90,8 +90,8 @@ chmod 777 auto_quick.sh
 
 ## How to run the experiments
 
-- To test if the evaluation runs without errors, ```auto_quick.sh``` can be executed (run ```./auto_quick.sh```)
-- To reproduce the evaluation from the RTSS paper, ```auto_full.sh``` can be executed (run ```./auto_full.sh```)
+- To test if the evaluation runs without errors, ```auto_quick.sh``` can be executed (run ```./auto_quick.sh```).
+- To reproduce the evaluation from the RTSS paper, ```auto_full.sh``` can be executed (run ```./auto_full.sh```).
 - The plotted figures can be found in the folder ```effsstsPlot/Data```:
 
 | Paper figure    | Plot in effsstsPlot/Data            |
@@ -113,9 +113,10 @@ To speed up the evaluation, the multiprocessing package is utilized which genera
 the schedulability tests. For the quick evaluation there are 6 concurrent processes, while for the full evaluation there
 are 100 concurrent processes. The number of concurrent processes can be modified by passing the desired number to the
 bash script, i.e.,
-``./auto_quick.sh <number processes>`` or ``./auto_full.sh <number processes>``. Please note that the maximum number of
-processes may be limited by the operating system. Hence, if you receive an error
-like ``OSError: [Errno 24] Too many open files`` please try to reduce the number of processes.
+``./auto_quick.sh <number processes>`` or ``./auto_full.sh <number processes>``.
+
+**Please note** that the maximum number of processes may be limited by the operating system. Hence, if you receive an
+error like ``OSError: [Errno 24] Too many open files`` please try to reduce the number of processes.
 
 As a reference, we utilize a machine running Debian 4.19.98-1 (2020-01-26) x86_64 GNU/Linux, with 2 x AMD EPYC 7742
 64-Core Processor (64 Cores, 128 Threads), i.e., in total 256 Threads with 2,25GHz and 256GB RAM.
