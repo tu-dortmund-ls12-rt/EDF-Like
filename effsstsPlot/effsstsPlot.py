@@ -90,7 +90,7 @@ def pickColor(ischeme):
     return color
 
 
-def pickMarker(ischeme):  # TODO adjust
+def pickMarker(ischeme):
     """Pick marker for different schemes."""
     marker = ''  # marker
     if ischeme in [
