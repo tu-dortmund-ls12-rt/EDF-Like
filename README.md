@@ -1,7 +1,3 @@
-TODO:
-
-- copy to private repo and remove branch "tuning"
-
 # EDF-Like Scheduling Schedulability Evaluation
 
 This repository is used to reproduce the evaluation from the paper
