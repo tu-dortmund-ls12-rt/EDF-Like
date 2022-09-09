@@ -9,6 +9,10 @@ else
   processes="0"  # This means: default number, which is 100
 fi
 
+# Print time
+starttime=$(date +"%T")
+echo "Start time: $starttime"
+
 # Run performance comparison
 python3 main.py "-p$processes" 1
 python3 main.py "-p$processes" 2
@@ -25,3 +29,8 @@ python3 runtime.py "-p$processes" 1
 # Run comparison with arbitrary DL FP analysis
 python3 comparison.py "-p$processes" 1
 python3 comparison.py "-p$processes" 2
+
+# Print time
+finishtime=$(date +"%T")
+echo "Finish time: $finishtime"
+echo "Total duration: $starttime -- $finishtime"
