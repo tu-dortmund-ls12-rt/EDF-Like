@@ -44,27 +44,30 @@ In case any dependent packages are missing, please install them accordingly.
 ## File Structure
 
     .
-    ├── README.md             
-    ├── auto_full.sh          # bash-script to automize the full evaluation
-    ├── auto_quick.sh         # bash-script to run evaluation with faster configuration (for testing)
-    ├── effsstsPlot           # Plotting
-    │ ├── __init__.py
-    │ ├── Data                # Evaluation data and plots
-    │ └── effsstsPlot.py      # Plot functionality
-    ├── main.py               # Main function of the evaluation
-    ├── runtime.py            # Main function to evaluate the runtime
-    └── schedTest             # Schedulability tests and benchmark
-      ├── __init__.py
-      ├── EL.py               # Our analysis for EDF-Like scheduling
-      ├── FP_Analyses.py
-      ├── RTEDF.py
-      ├── SCEDF.py
-      ├── UDLEDF.py
-      ├── UUniFast.py
-      ├── UniFramework.py
-      ├── WLAEDF.py
-      ├── functions.py
-      └── tgPath.py           # Benchmark
+    ├── LICENSE.md
+    ├── README.md
+    ├── auto_full.sh              # bash-script to automize the full evaluation
+    ├── auto_quick.sh             # bash-script to run evaluation with faster configuration (for testing)
+    ├── comparison.py             # Main function to compare with GUC21 (Figure 9)
+    ├── effsstsPlot               # Plotting
+    │   ├── __init__.py
+    │   ├── Data                  # Evaluation data and plots (Generated during runtime)
+    │   └── effsstsPlot.py        # Plot functionality
+    ├── main.py                   # Main function of the evaluation (Figures 5-8)
+    ├── runtime.py                # Main function to evaluate the runtime
+    └── schedTest                 # Schedulability tests and benchmark
+        ├── __init__.py
+        ├── EL.py                 # Our analysis for EDF-Like scheduling
+        ├── FP_Analyses.py
+        ├── GUC21.py
+        ├── RTEDF.py
+        ├── SCEDF.py
+        ├── UDLEDF.py
+        ├── UUniFast.py
+        ├── UniFramework.py
+        ├── WLAEDF.py
+        ├── functions.py
+        └── tgPath.py             # Benchmark
 
 ### Deployment
 
